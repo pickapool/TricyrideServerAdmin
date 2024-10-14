@@ -38,7 +38,7 @@
         {
             Task<UserAccountResponse> item = _accountService.SignInWithEmailAndPassword(email, password);
             await item;
-            if (item.Status == TaskStatus.RanToCompletion)
+            if (item.Status == TaskStatus.RanToCompletion) 
             {
                 if (item.Result != null)
                 {
