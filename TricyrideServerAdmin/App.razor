@@ -38,7 +38,7 @@
         {
             Task<UserAccountResponse> item = _accountService.SignInWithEmailAndPassword(email, password);
             await item;
-            if (item.Status == TaskStatus.RanToCompletion) 
+            if (item.Status == TaskStatus.RanToCompletion)
             {
                 if (item.Result != null)
                 {
@@ -47,7 +47,6 @@
                     tokenModel.Token = item.Result.IdToken;
                     tokenModel.ExpiresAt = expirationTime;
                     await _localStorage.SetItemAsync("token", tokenModel);
-                    Claims
                 }
                 else
                 {
