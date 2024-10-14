@@ -47,6 +47,7 @@
                     tokenModel.Token = item.Result.IdToken;
                     tokenModel.ExpiresAt = expirationTime;
                     await _localStorage.SetItemAsync("token", tokenModel);
+                    ((CustomAuthStateProvider)_authenticationStateProvider).NotifyUserAuthentication(item.Result.IdToken);
                 }
                 else
                 {

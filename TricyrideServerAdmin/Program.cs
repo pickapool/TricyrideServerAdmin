@@ -3,8 +3,10 @@ using Blazored.LocalStorage;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
+using TricyrideServerAdmin.Common;
 using TricyrideServerAdmin.Services.AccountServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();

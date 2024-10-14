@@ -27,7 +27,7 @@
                 {
                     StateHasChanged();
                 } else {
-                    _navigation.NavigateTo("/dashboard");
+                    ((CustomAuthStateProvider)_authenticationStateProvider).NotifyUserAuthentication(getToken.Result.Token);
                 }
                 isChecked = true;
                 StateHasChanged();

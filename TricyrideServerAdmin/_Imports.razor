@@ -8,6 +8,7 @@
 @using Microsoft.JSInterop
 @using TricyrideServerAdmin
 @using TricyrideServerAdmin.Shared
+@using Microsoft.AspNetCore.Components.Authorization;
 
 @using MudBlazor
 @using Blazored.LocalStorage
@@ -22,3 +23,4 @@
 @inject IAccountService _accountService
 @inject ISnackbar _snackBar
 @inject NavigationManager _navigation
+@inject AuthenticationStateProvider _authenticationStateProvider
