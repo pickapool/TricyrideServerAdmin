@@ -51,7 +51,24 @@ namespace TricyrideServerAdmin.Common
             var jsonBytes = ParseBase64WithoutPadding(payload);
             var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
 
-            return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+            var claims = new List<Claim>();
+
+            // Use the correct key to access the email value
+            if (keyValuePairs.TryGetValue("email", out var email))
+            {
+                claims.Add(new Claim(ClaimTypes.Email, email.ToString()));
+            }
+
+            // Add any other claims you may need
+            foreach (var kvp in keyValuePairs)
+            {
+                if (!claims.Any(c => c.Type == kvp.Key)) // Avoid duplicates
+                {
+                    claims.Add(new Claim(kvp.Key, kvp.Value.ToString()));
+                }
+            }
+
+            return claims;
         }
 
         private byte[] ParseBase64WithoutPadding(string base64)

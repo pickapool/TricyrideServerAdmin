@@ -9,13 +9,26 @@
 <div class="page">
     <MudLayout>
         <MudAppBar Elevation="1">
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/MudBlazor/MudBlazor" Target="_blank" />
+            <CascadingAuthenticationState>
+                <AuthorizeView>
+                    <Authorized>
+                        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+                        <MudSpacer />
+                        @email
+                        <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="Logout"/>
+                    </Authorized>
+                    <NotAuthorized>
+                        <MudAvatar Class="mr-2">
+                            <MudImage Src="images/logo.jpg" Alt="logo" Size="Size.Large"></MudImage>
+                        </MudAvatar>
+                        <MudText Typo="Typo.h6">Tricyride</MudText>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </CascadingAuthenticationState>
         </MudAppBar>
         <MudDrawer @bind-Open="@_open" Elevation="1">
             <MudDrawerHeader>
-                <MudText Typo="Typo.h6">My App</MudText>
+                <MudText Typo="Typo.h6">Tricyride</MudText>
             </MudDrawerHeader>
             <MudNavMenu>
                 <MudNavLink Match="NavLinkMatch.All">Dashboard</MudNavLink>
@@ -30,9 +43,17 @@
 </div>
 @code {
     private bool _open = false;
+    private string email = string.Empty;
     protected override async Task OnInitializedAsync()
     {
-        
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var claimsPrincipal = authState.User;
+
+        if (claimsPrincipal.Identity.IsAuthenticated)
+        {
+            email = claimsPrincipal.FindFirst(ClaimTypes.Email)?.Value;
+            StateHasChanged();
+        }
     }
     private void ToggleDrawer()
     {
