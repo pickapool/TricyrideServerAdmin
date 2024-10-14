@@ -1,0 +1,63 @@
+﻿<Preloader>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <CascadingAuthenticationState>
+                <AuthorizeView>
+                    <Authorized>
+                        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+                    </Authorized>
+                    <NotAuthorized>
+                        <LayoutView Layout="@typeof(MainLayout)">
+                            <div class="page">
+                                <MudPaper Class="d-flex flex-column pa-4" Elevation="3" Width="50vw" Height="50vh">
+                                    <MudTextField @bind-Value="email" Label="Email" Variant="Variant.Outlined" />
+                                    <MudTextField @bind-Value="password" InputType="InputType.Password" Label="Password" Variant="Variant.Outlined" />
+                                    <MudButton Variant="Variant.Filled" OnClick="Login" Color="Color.Primary">Primary</MudButton>
+                                </MudPaper>
+                            </div>
+                        </LayoutView>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </CascadingAuthenticationState>
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</Preloader>
+@code
+{
+    private string email, password;
+    private async Task Login()
+    {
+        try
+        {
+            Task<UserAccountResponse> item = _accountService.SignInWithEmailAndPassword(email, password);
+            await item;
+            if (item.Status == TaskStatus.RanToCompletion)
+            {
+                if (item.Result != null)
+                {
+                    DateTime expirationTime = DateTime.UtcNow.AddSeconds(int.Parse(item.Result.ExpiresIn));
+                    TokenModel tokenModel = new();
+                    tokenModel.Token = item.Result.IdToken;
+                    tokenModel.ExpiresAt = expirationTime;
+                    await _localStorage.SetItemAsync("token", tokenModel);
+                    Claims
+                }
+                else
+                {
+                    Extensions.ShowSnackbar("Invalid email or passowrd", Variant.Filled, _snackBar, Severity.Error);
+                }
+            }
+        }
+        catch (Exception ee)
+        {
+            Extensions.ShowSnackbar("Invalid email or passowrd", Variant.Filled, _snackBar, Severity.Error);
+        }
+    }
+}

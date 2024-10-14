@@ -1,0 +1,37 @@
+@if(isChecked)
+{
+    @ChildContent
+} else {
+    <span>Loading...</span>
+}
+
+@code {
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    private bool isChecked = false;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            ValueTask<TokenModel> getToken = _localStorage.GetItemAsync<TokenModel>("token");
+            await getToken;
+            if(getToken.IsCompletedSuccessfully)
+            {
+                if(getToken.Result == null)
+                {
+                    isChecked = true;
+                    StateHasChanged();
+                    return;
+                }
+                if(Extensions.IsTokenExpired(_localStorage, getToken.Result))
+                {
+                    StateHasChanged();
+                } else {
+                    _navigation.NavigateTo("/dashboard");
+                }
+                isChecked = true;
+                StateHasChanged();
+            }
+        }
+    }
+}
