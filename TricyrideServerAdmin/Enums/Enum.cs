@@ -7,5 +7,11 @@
             Driver,
             Commuter
         }
+        public enum CommuteStatus
+        {
+            InProgress,
+            Cancelled,
+            Done,
+        }
     }
 }

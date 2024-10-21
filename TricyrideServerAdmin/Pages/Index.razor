@@ -1,7 +1,13 @@
 ﻿@page "/"
 
-<MudGrid Class="pa-3 mb-4" Spacing="5">    
-    @* <MudItem xs="10">
+@if (IsLoading)
+{
+    <MudProgressCircular Class="global-loader" Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true"></MudProgressCircular>
+}
+else
+{
+    <MudGrid Class="pa-3 mb-4" Spacing="5">    
+        @* <MudItem xs="10">
 
     </MudItem>
     <MudItem xs="2">
@@ -13,85 +19,139 @@
         </PickerActions>
     </MudDateRangePicker>
     </MudItem> *@
-    <MudItem Class="center-items-h" xs=12 sm=4 md=4>
-        <MudImage Class="c-border" Elevation=1 Src="/images/logo.jpg" ObjectFit="ObjectFit.Fill" Height="400"></MudImage>
-    </MudItem>
-    <MudItem Class="align-content-center" xs=12 sm=8 md=8>
-        <div class="d-flex flex-row">
-            <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #7da0fa;">
-                <MudText Class="c-w" Typo="Typo.body2">Today's Bookings</MudText>
-                <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
-                <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
-            </MudPaper>
-            <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #4747a1;">
-                <MudText Class="c-w" Typo="Typo.body2">Total Bookings</MudText>
-                <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
-                <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
-            </MudPaper>
-        </div>
-        <div class="d-flex flex-row reduce-margin-t">
-            <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #7978e9;">
-                <MudText Class="c-w" Typo="Typo.body2">Available Driver</MudText>
-                <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
-                <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
-            </MudPaper>
-            <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #2bb6c1;">
-                <MudText Class="c-w" Typo="Typo.body2">Driver Maintenance</MudText>
-                <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
-                <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
-            </MudPaper>
-        </div>
-    </MudItem>
-    <MudItem xs=12 sm=6 md=6>
-        <MudPaper Class="c-border pa-4 d-flex flex-column position-relative" Height="calc(100vh - 300px)">
-            <MudText Typo="Typo.h6">Yearly Revenue Overview</MudText>
-            <MudText Typo="Typo.subtitle1">The graph visualizes the daily revenue generated from tricycle yearly</MudText>
-            <div class="d-flex flex-row mt-3 justify-content-between pl-10 pr-10 mb-4">
-                <div class="d-flex flex-column align-items-center">
-                    <MudText Typo="Typo.caption">Total Bookings Revenue</MudText>
-                    <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
-                </div>
-                <div class="d-flex flex-column align-items-center">
-                    <MudText Typo="Typo.caption">Cancellation Fees</MudText>
-                    <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
-                </div>
-                <div class="d-flex flex-column align-items-center">
-                    <MudText Typo="Typo.caption">Net Revenue</MudText>
-                    <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
-                </div>
+        <MudItem Class="center-items-h" xs=12 sm=4 md=4>
+            <MudImage Class="c-border" Elevation=1 Src="/images/logo.jpg" ObjectFit="ObjectFit.Fill" Height="400"></MudImage>
+        </MudItem>
+        <MudItem Class="align-content-center" xs=12 sm=8 md=8>
+            <div class="d-flex flex-row">
+                <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #7da0fa;">
+                    <MudText Class="c-w" Typo="Typo.body2">Today's Bookings</MudText>
+                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+                </MudPaper>
+                <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #4747a1;">
+                    <MudText Class="c-w" Typo="Typo.body2">Total Bookings</MudText>
+                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+                </MudPaper>
             </div>
-            <Chart Config="lineChart"></Chart>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs=12 sm=6 md=6>
-        <MudPaper Class="c-border pa-4"  Height="calc(100vh - 300px)">
-            <MudText Typo="Typo.h6">Monthly Revenue Overview</MudText>
-            <MudText Class="mb-20" Typo="Typo.subtitle1">The graph visualizes the daily revenue generated from tricycle monthly</MudText>
-            <Chart Config="barChart"></Chart>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs=12 sm=4 md=4>
-        <MudPaper Class="c-border pa-4"  Height="calc(100vh - 300px)">
-            <MudText Typo="Typo.h6">Notifications</MudText>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs=12 sm=8 md=8>
-        <MudPaper Class="c-border pa-4"  Height="calc(100vh - 300px)">
-             <MudText Typo="Typo.h6">Additional Details</MudText>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
-
+            <div class="d-flex flex-row reduce-margin-t">
+                <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #7978e9;">
+                    <MudText Class="c-w" Typo="Typo.body2">Available Driver</MudText>
+                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+                </MudPaper>
+                <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #2bb6c1;">
+                    <MudText Class="c-w" Typo="Typo.body2">Driver Maintenance</MudText>
+                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+                </MudPaper>
+            </div>
+        </MudItem>
+        <MudItem xs=12 sm=6 md=6>
+            <MudPaper Class="c-border pa-4 d-flex flex-column position-relative" Height="calc(100vh - 300px)">
+                <MudText Typo="Typo.h6">Yearly Revenue Overview</MudText>
+                <MudText Typo="Typo.subtitle1">The graph visualizes the daily revenue generated from tricycle yearly</MudText>
+                <div class="d-flex flex-row mt-3 justify-content-between pl-10 pr-10 mb-4">
+                    <div class="d-flex flex-column align-items-center">
+                        <MudText Typo="Typo.caption">Total Bookings Revenue</MudText>
+                        <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
+                    </div>
+                    <div class="d-flex flex-column align-items-center">
+                        <MudText Typo="Typo.caption">Cancellation Fees</MudText>
+                        <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
+                    </div>
+                    <div class="d-flex flex-column align-items-center">
+                        <MudText Typo="Typo.caption">Net Revenue</MudText>
+                        <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
+                    </div>
+                </div>
+                <Chart Config="lineChart"></Chart>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs=12 sm=6 md=6>
+            <MudPaper Class="c-border pa-4"  Height="calc(100vh - 300px)">
+                <MudText Typo="Typo.h6">Monthly Revenue Overview</MudText>
+                <MudText Class="mb-20" Typo="Typo.subtitle1">The graph visualizes the daily revenue generated from tricycle monthly</MudText>
+                <Chart Config="barChart"></Chart>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs=12 sm=4 md=4>
+            <MudPaper Class="c-border pa-4"  Height="calc(100vh - 300px)">
+                <MudText Typo="Typo.h6">Notifications</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs=12 sm=8 md=8>
+            <MudPaper Class="c-border pa-4"  Height="auto">
+                <MudText Class="mb-5" Typo="Typo.h6">Additional Details</MudText>
+                <MudTable Elevation="0" Items="@listcommutes" Breakpoint="Breakpoint.Sm" Dense Striped Height="calc(100vh - 380px)">
+                    @* <ColGroup>
+                        <col />
+                        <col style="width: 100px;"/>
+                        <col style="width: 200px;" />
+                        <col style="width: 100px;" />
+                        <col />
+                    </ColGroup> *@
+                    <HeaderContent>
+                        <MudTh>Detail</MudTh>
+                        <MudTh Style="text-align:center">Fare</MudTh>
+                        <MudTh>Driver</MudTh>
+                        <MudTh Style="text-align:center">Status</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Detail">
+                            <div class="d-flex flex-column">
+                                <MudText Typo="Typo.caption">Pickup Location: @context.Address1</MudText>
+                                <MudText Typo="Typo.caption">Destination: @context.Address2</MudText>
+                            </div>
+                        </MudTd>
+                        <MudTd Style="text-align:end;" DataLabel="Fare">₱ @Convert.ToDecimal(context.Fare).ToString("N2")</MudTd>
+                        <MudTd DataLabel="Name">@((context.DriverAccount?? new()).GetFullName())</MudTd>
+                        <MudTd Style="text-align:center" DataLabel="Position">
+                            @if(context.CommuteStatus == Enums.Enum.CommuteStatus.InProgress)
+                            {
+                                <MudChip T="string" Color="Color.Warning">@context.CommuteStatus</MudChip>
+                            } else if(context.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled) {
+                                <MudChip T="string" Color="Color.Error">@context.CommuteStatus</MudChip>
+                            } else {
+                                <MudChip T="string" Color="Color.Success">@context.CommuteStatus</MudChip>
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager />
+                    </PagerContent>
+                </MudTable>
+            </MudPaper>
+            
+        </MudItem>
+    </MudGrid>
+}
 @code {
     private MudDateRangePicker _picker;
     private DateRange _dateRange = new DateRange(DateTime.Now.Date, DateTime.Now.AddDays(5).Date);
     private LineConfig lineChart;
     private BarConfig barChart;
-    protected override void OnInitialized()
+    List<UserAccountModel> listAccounts = new();
+    List<CommuteModel> listcommutes = new();
+    private bool IsLoading = true;
+    protected override async Task OnInitializedAsync()
     {
+        await GetList();
         LineChartSetUp();
         BarChartSetup();
+        IsLoading = false;
+        StateHasChanged();
     }
+    private async Task GetList()
+    {
+        listAccounts = await _accountService.GetUsers();
+        listcommutes = await _commuteService.GetCommutes();
+        foreach(var comm in listcommutes){
+            comm.DriverAccount = listAccounts.Where( e => e.Uid == comm.DriverUid).FirstOrDefault();
+        }
+    }
+    
     private void LineChartSetUp()
     {
         lineChart = new LineConfig

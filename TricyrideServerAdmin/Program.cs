@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
 using TricyrideServerAdmin.Common;
 using TricyrideServerAdmin.Services.AccountServices;
+using TricyrideServerAdmin.Services.CommuteServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICommuteService, CommuteService>();
 
 var app = builder.Build();
 

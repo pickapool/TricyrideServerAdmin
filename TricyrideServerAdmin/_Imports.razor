@@ -14,6 +14,8 @@
 @using Blazored.LocalStorage
 
 @using Services.AccountServices
+@using Services.CommuteServices
+
 @using Models
 @using Enums
 @using FirebaseAdmin.Auth;
@@ -26,6 +28,7 @@
 
 
 @inject ILocalStorageService _localStorage
+@inject ICommuteService _commuteService
 @inject IAccountService _accountService
 @inject ISnackbar _snackBar
 @inject NavigationManager _navigation
