@@ -30,7 +30,17 @@ namespace TricyrideServerAdmin.Services.CommuteServices
                 PassengerDestinationLongitude = d.Object.PassengerDestinationLongitude,
                 IsOccupied = d.Object.IsOccupied,
                 CommuteStatus = d.Object.CommuteStatus,
-                //CommuteDate = d.Object.CommuteDate,
+                CommuteDate = new CommuteDateModel
+                {
+                    Year = d.Object.CommuteDate.Year,
+                    Month = d.Object.CommuteDate.Month,
+                    Day = d.Object.CommuteDate.Day,
+                    Hours = d.Object.CommuteDate.Hours,
+                    Minutes = d.Object.CommuteDate.Minutes,
+                    Seconds = d.Object.CommuteDate.Seconds,
+                    TimezoneOffset = d.Object.CommuteDate.TimezoneOffset,
+                    time = d.Object.CommuteDate.time
+                },
                 Distance = d.Object.Distance,
                 Fare = d.Object.Fare,
                 Time = d.Object.Time,

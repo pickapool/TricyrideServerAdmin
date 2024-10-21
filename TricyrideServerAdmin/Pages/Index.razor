@@ -103,6 +103,7 @@ else
                             <div class="d-flex flex-column">
                                 <MudText Typo="Typo.caption">Pickup Location: @context.Address1</MudText>
                                 <MudText Typo="Typo.caption">Destination: @context.Address2</MudText>
+                                <MudText Typo="Typo.caption">@(context.CommuteDate.ToDateTime() == null ? "" : context.CommuteDate.ToDateTime()?.ToString("MMMM dd, yyyy hh:mm tt"))</MudText>
                             </div>
                         </MudTd>
                         <MudTd Style="text-align:end;" DataLabel="Fare">₱ @Convert.ToDecimal(context.Fare).ToString("N2")</MudTd>
@@ -150,6 +151,9 @@ else
         foreach(var comm in listcommutes){
             comm.DriverAccount = listAccounts.Where( e => e.Uid == comm.DriverUid).FirstOrDefault();
         }
+        listcommutes = listcommutes
+            .OrderByDescending(c => c.CommuteDate.ToDateTime())
+            .ToList();
     }
     
     private void LineChartSetUp()

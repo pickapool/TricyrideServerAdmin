@@ -15,7 +15,7 @@ namespace TricyrideServerAdmin.Models
         //public PassengerRoute PassengerRoute { get; set; }
         public bool IsOccupied { get; set; }
         public CommuteStatus CommuteStatus { get; set; }
-        //public DateTime CommuteDate { get; set; }
+        public CommuteDateModel CommuteDate { get; set; }
         public string Distance { get; set; }
         public string Fare { get; set; }
         public string Time { get; set; }
