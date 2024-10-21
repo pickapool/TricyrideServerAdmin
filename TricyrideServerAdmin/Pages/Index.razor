@@ -82,7 +82,7 @@ else
             </MudPaper>
         </MudItem>
         <MudItem xs=12 sm=8 md=8>
-            <MudPaper Class="c-border pa-4"  Height="auto">
+            <MudPaper Class="c-border pa-4 mb-10"  Height="auto">
                 <MudText Class="mb-5" Typo="Typo.h6">Additional Details</MudText>
                 <MudTable Elevation="0" Items="@listcommutes" Breakpoint="Breakpoint.Sm" Dense Striped Height="calc(100vh - 380px)">
                     @* <ColGroup>
@@ -107,7 +107,7 @@ else
                             </div>
                         </MudTd>
                         <MudTd Style="text-align:end;" DataLabel="Fare">₱ @Convert.ToDecimal(context.Fare).ToString("N2")</MudTd>
-                        <MudTd DataLabel="Name">@((context.DriverAccount?? new()).GetFullName())</MudTd>
+                        <MudTd DataLabel="Name">@(context.DriverAccount == null ? "Not Occupied" : context.DriverAccount.GetFullName())</MudTd>
                         <MudTd Style="text-align:center" DataLabel="Position">
                             @if(context.CommuteStatus == Enums.Enum.CommuteStatus.InProgress)
                             {
@@ -115,7 +115,9 @@ else
                             } else if(context.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled) {
                                 <MudChip T="string" Color="Color.Error">@context.CommuteStatus</MudChip>
                             } else {
-                                <MudChip T="string" Color="Color.Success">@context.CommuteStatus</MudChip>
+                                <MudChip T="string" Color="Color.Success">
+                                    @(context.DriverAccount == null ? "Waiting" : @context.CommuteStatus)
+                                </MudChip>
                             }
                         </MudTd>
                     </RowTemplate>
