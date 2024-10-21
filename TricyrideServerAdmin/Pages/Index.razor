@@ -1,5 +1,200 @@
 ﻿@page "/"
 
+<MudGrid Class="pa-3 mb-4" Spacing="5">    
+    @* <MudItem xs="10">
+
+    </MudItem>
+    <MudItem xs="2">
+            <MudDateRangePicker @ref="_picker" Variant="Variant.Outlined" Label="Date range" @bind-DateRange="_dateRange" PickerVariant="PickerVariant.Dialog" Margin="Margin.Dense">
+        <PickerActions>
+            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.ClearAsync())">Clear</MudButton>
+            <MudButton OnClick="@(() => _picker.CloseAsync(false))">Cancel</MudButton>
+            <MudButton Color="Color.Primary" OnClick="@(() => _picker.CloseAsync())">Ok</MudButton>
+        </PickerActions>
+    </MudDateRangePicker>
+    </MudItem> *@
+    <MudItem Class="center-items-h" xs=12 sm=4 md=4>
+        <MudImage Class="c-border" Elevation=1 Src="/images/logo.jpg" ObjectFit="ObjectFit.Fill" Height="400"></MudImage>
+    </MudItem>
+    <MudItem Class="align-content-center" xs=12 sm=8 md=8>
+        <div class="d-flex flex-row">
+            <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #7da0fa;">
+                <MudText Class="c-w" Typo="Typo.body2">Today's Bookings</MudText>
+                <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
+                <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+            </MudPaper>
+            <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #4747a1;">
+                <MudText Class="c-w" Typo="Typo.body2">Total Bookings</MudText>
+                <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
+                <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+            </MudPaper>
+        </div>
+        <div class="d-flex flex-row reduce-margin-t">
+            <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #7978e9;">
+                <MudText Class="c-w" Typo="Typo.body2">Available Driver</MudText>
+                <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
+                <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+            </MudPaper>
+            <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #2bb6c1;">
+                <MudText Class="c-w" Typo="Typo.body2">Driver Maintenance</MudText>
+                <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
+                <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+            </MudPaper>
+        </div>
+    </MudItem>
+    <MudItem xs=12 sm=6 md=6>
+        <MudPaper Class="c-border pa-4 d-flex flex-column position-relative" Height="calc(100vh - 300px)">
+            <MudText Typo="Typo.h6">Yearly Revenue Overview</MudText>
+            <MudText Typo="Typo.subtitle1">The graph visualizes the daily revenue generated from tricycle yearly</MudText>
+            <div class="d-flex flex-row mt-3 justify-content-between pl-10 pr-10 mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <MudText Typo="Typo.caption">Total Bookings Revenue</MudText>
+                    <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                    <MudText Typo="Typo.caption">Cancellation Fees</MudText>
+                    <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                    <MudText Typo="Typo.caption">Net Revenue</MudText>
+                    <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
+                </div>
+            </div>
+            <Chart Config="lineChart"></Chart>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs=12 sm=6 md=6>
+        <MudPaper Class="c-border pa-4"  Height="calc(100vh - 300px)">
+            <MudText Typo="Typo.h6">Monthly Revenue Overview</MudText>
+            <MudText Class="mb-20" Typo="Typo.subtitle1">The graph visualizes the daily revenue generated from tricycle monthly</MudText>
+            <Chart Config="barChart"></Chart>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs=12 sm=4 md=4>
+        <MudPaper Class="c-border pa-4"  Height="calc(100vh - 300px)">
+            <MudText Typo="Typo.h6">Notifications</MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs=12 sm=8 md=8>
+        <MudPaper Class="c-border pa-4"  Height="calc(100vh - 300px)">
+             <MudText Typo="Typo.h6">Additional Details</MudText>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private MudDateRangePicker _picker;
+    private DateRange _dateRange = new DateRange(DateTime.Now.Date, DateTime.Now.AddDays(5).Date);
+    private LineConfig lineChart;
+    private BarConfig barChart;
+    protected override void OnInitialized()
+    {
+        LineChartSetUp();
+        BarChartSetup();
+    }
+    private void LineChartSetUp()
+    {
+        lineChart = new LineConfig
+        {
+            Options = new LineOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Yearly Revenue Chart"
+                }
+            }
+        };
+
+        foreach (string months in new[] { "2024", "2025", "2026", "2027", "2028" })
+        {
+            lineChart.Data.Labels.Add(months);
+        }
+
+        LineDataset<int> dataset = new LineDataset<int>(new[] { 6, 5, 3, 7 })
+        {
+            Label = "Total Bookings",
+            BackgroundColor = "rgba(0, 0, 0, 0)",
+            BorderColor = ColorUtil.ColorHexString(54, 162, 235),
+            BorderWidth = 2,                                      // Smooth curve
+            CubicInterpolationMode = ChartJs.Blazor.Common.Enums.CubicInterpolationMode.Monotone               // Interpolation mode
+        };
+        LineDataset<int> dataset1 = new LineDataset<int>(new[] { 1, 7, 4, 6 })
+        {
+            Label = "Cancellation Fees",
+            BackgroundColor = "rgba(0, 0, 0, 0)",
+            BorderColor = ColorUtil.ColorHexString(255, 205, 86), 
+            BorderWidth = 2,                                      // Smooth curve
+            CubicInterpolationMode = ChartJs.Blazor.Common.Enums.CubicInterpolationMode.Monotone               // Interpolation mode
+        };
+        LineDataset<int> dataset2 = new LineDataset<int>(new[] { 7, 1, 10, 15 })
+        {
+            Label = "Net Revenue",
+            BackgroundColor = "rgba(0, 0, 0, 0)",
+            BorderColor = ColorUtil.ColorHexString(169, 169, 169), 
+            BorderWidth = 2,                                      // Smooth curve
+            CubicInterpolationMode = ChartJs.Blazor.Common.Enums.CubicInterpolationMode.Monotone               // Interpolation mode
+        };
 
 
-    
+        lineChart.Data.Datasets.Add(dataset);
+        lineChart.Data.Datasets.Add(dataset1);
+        lineChart.Data.Datasets.Add(dataset2);
+    }
+    private void BarChartSetup()
+    {
+        barChart = new BarConfig
+        {
+            Options = new BarOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Monthly Revenue Chart"
+                }
+            }
+        };
+
+        foreach (string months in new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" })
+        {
+            barChart.Data.Labels.Add(months);
+        }
+
+        BarDataset<int> dataset = new BarDataset<int>(new[] { 6, 5, 3, 7 })
+        {
+            Label = "Total Bookings",
+            BackgroundColor = ColorUtil.ColorHexString(54, 162, 235),
+            BorderColor = ColorUtil.ColorHexString(54, 162, 235),
+            BorderWidth = 2,                                   
+        };
+        BarDataset<int> dataset1 = new BarDataset<int>(new[] { 1, 7, 4, 6 })
+        {
+            Label = "Cancellation Fees",
+            BackgroundColor = ColorUtil.ColorHexString(255, 205, 86),
+            BorderColor = ColorUtil.ColorHexString(255, 205, 86), 
+            BorderWidth = 2,                                           
+        };
+        BarDataset<int> dataset2 = new BarDataset<int>(new[] { 7, 1, 10, 15 })
+        {
+            Label = "Net Revenue",
+            BackgroundColor = ColorUtil.ColorHexString(169, 169, 169),
+            BorderColor = ColorUtil.ColorHexString(169, 169, 169), 
+            BorderWidth = 2,                                      
+        };
+
+        barChart.Data.Datasets.Add(dataset);
+        barChart.Data.Datasets.Add(dataset1);
+        barChart.Data.Datasets.Add(dataset2);
+    }
+}
+<style>
+    .c-w
+    {
+        color: white !important;
+    }
+    .c-b {
+        color: #4b49ac;
+    }
+</style>

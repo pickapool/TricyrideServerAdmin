@@ -25,7 +25,8 @@
                 }
                 if(Extensions.IsTokenExpired(_localStorage, getToken.Result))
                 {
-                    StateHasChanged();
+                     await _localStorage.RemoveItemAsync("token");
+                    ((CustomAuthStateProvider)_authenticationStateProvider).NotifyUserLogout();
                 } else {
                     ((CustomAuthStateProvider)_authenticationStateProvider).NotifyUserAuthentication(getToken.Result.Token);
                 }
