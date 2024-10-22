@@ -36,9 +36,7 @@
             </MudDrawerHeader>
             <MudNavMenu>
                 <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-                <MudNavGroup Title="Bookings" Icon="@Icons.Material.Filled.LibraryBooks" Expanded="true">
-                        
-                </MudNavGroup>
+                <MudNavLink Href="/bookings" Title="Bookings" Icon="@Icons.Material.Filled.LibraryBooks">Bookings</MudNavLink>
                 <MudNavGroup Title="Drivers" Icon="@Icons.Material.Filled.DeliveryDining" Expanded="true">
                         
                 </MudNavGroup>
@@ -88,5 +86,6 @@
         justify-content: center;
         height: 100vh;
         overflow-y: auto;
+        position: relative;
     }
 </style>

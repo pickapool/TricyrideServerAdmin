@@ -17,7 +17,7 @@ namespace TricyrideServerAdmin.Models
         public CommuteStatus CommuteStatus { get; set; }
         public CommuteDateModel CommuteDate { get; set; }
         public string Distance { get; set; }
-        public string Fare { get; set; }
+        public decimal Fare { get; set; }
         public string Time { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }

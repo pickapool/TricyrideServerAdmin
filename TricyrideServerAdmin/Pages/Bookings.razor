@@ -1,0 +1,110 @@
+@page "/bookings"
+@if (IsLoading)
+{
+    <MudProgressCircular Class="global-loader" Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true"></MudProgressCircular>
+}
+else
+{
+    <MudTable Class="ma-2" Style="width:100vw; overflow: auto;" Height="calc(100vh - 180px)" Items="@listcommutes" Hover="true" Filter="new Func<CommuteModel,bool>(FilterFunc)" FixedFooter FixedHeader>
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Booking List</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" 
+                Class="mt-0" Immediate></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="UID" T="CommuteModel">UID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="Driver" T="CommuteModel">Driver</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="Commuter" T="CommuteModel">Commuter</MudTableSortLabel></MudTh>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="Date" T="CommuteModel">Date</MudTableSortLabel></MudTh>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="Fare" T="CommuteModel">Fare</MudTableSortLabel></MudTh>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="Status" T="CommuteModel">Status</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="UID">@context.Key</MudTd>
+            <MudTd DataLabel="Driver">
+                <div class="d-flex flex-row align-items-center gap-2">
+                    <MudAvatar>
+                        <MudImage Src="@(context.DriverAccount == null || String.IsNullOrEmpty(context.DriverAccount?.ProfilePicture) ? "images/blank_profile.png" : context.DriverAccount?.ProfilePicture)"></MudImage>
+                    </MudAvatar>
+                    <div class="d-flex flex-column">
+                        <MudText Typo="Typo.button">@(context.DriverAccount == null ? "Not Occupied" : context.DriverAccount?.GetFullName())</MudText>
+                        <MudText Typo="Typo.caption">@(context.DriverAccount == null ? "" : context.DriverAccount?.Email)</MudText>
+                    </div>
+                    
+                </div>
+            </MudTd>
+            <MudTd DataLabel="Commuter">
+                <div class="d-flex flex-row align-items-center gap-2">
+                    <MudAvatar>
+                        <MudImage Src="@(context.PassengerAccount == null || String.IsNullOrEmpty(context.PassengerAccount?.ProfilePicture) ? "images/blank_profile.png" : context.PassengerAccount?.ProfilePicture)"></MudImage>
+                    </MudAvatar>
+                    <div class="d-flex flex-column">
+                        <MudText Typo="Typo.button">@(context.PassengerAccount == null ? "Not Occupied" : context.PassengerAccount?.GetFullName())</MudText>
+                        <MudText Typo="Typo.caption">@(context.PassengerAccount == null ? "" : context.PassengerAccount?.Email)</MudText>
+                    </div>
+                </div>
+            </MudTd>
+            <MudTd DataLabel="Date">@context.CommuteDate?.ToDateTime()</MudTd>
+            <MudTd Class="text-end" DataLabel="Fare">₱ @context.Fare.ToString("N2")</MudTd>
+            <MudTd Class="text-center" DataLabel="Status">
+                @if(context.CommuteStatus == Enums.Enum.CommuteStatus.InProgress)
+                {
+                    <MudChip T="string" Color="Color.Warning" Size="Size.Small">@context.CommuteStatus</MudChip>
+                } else if(context.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled) {
+                    <MudChip T="string" Color="Color.Error" Size="Size.Small">@context.CommuteStatus</MudChip>
+                } else {
+                    <MudChip T="string" Color="Color.Success" Size="Size.Small">
+                        @(context.DriverAccount == null ? "Waiting" : @context.CommuteStatus)
+                    </MudChip>
+                }
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+@code {
+    List<UserAccountModel> listAccounts = new();
+    List<CommuteModel> listcommutes = new();
+    private string searchString = "";
+    private bool IsLoading = true;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetList();
+        IsLoading = false;
+        StateHasChanged();
+    }
+    private async Task GetList()
+    {
+        listAccounts = await _accountService.GetUsers();
+        listcommutes = await _commuteService.GetCommutes();
+        foreach(var comm in listcommutes) {
+            comm.DriverAccount = listAccounts.Where( e => e.Uid == comm.DriverUid).FirstOrDefault();
+            comm.PassengerAccount = listAccounts.Where( e => e.Uid == comm.PassengerUid).FirstOrDefault();
+        }
+        listcommutes = listcommutes
+            .OrderByDescending(c => c.CommuteDate.ToDateTime())
+            .ToList();
+    }
+    private bool FilterFunc(CommuteModel element)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.DriverAccount != null && element.DriverAccount.GetFullName().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.PassengerAccount != null && element.PassengerAccount.GetFullName().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.CommuteStatus.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+}

@@ -26,25 +26,25 @@ else
             <div class="d-flex flex-row">
                 <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #7da0fa;">
                     <MudText Class="c-w" Typo="Typo.body2">Today's Bookings</MudText>
-                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
-                    <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">@todayTotalBooking.ToString("N0")</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">@(((todayTotalBooking/totalBooking)*100).ToString("N2")) %</MudText>
                 </MudPaper>
                 <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #4747a1;">
                     <MudText Class="c-w" Typo="Typo.body2">Total Bookings</MudText>
-                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
-                    <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">@totalBooking.ToString("N0")</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">@((((totalBooking - todayTotalBooking)/totalBooking)*100).ToString("N2")) %</MudText>
                 </MudPaper>
             </div>
             <div class="d-flex flex-row reduce-margin-t">
                 <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #7978e9;">
-                    <MudText Class="c-w" Typo="Typo.body2">Available Driver</MudText>
-                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
-                    <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">Total Drivers</MudText>
+                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">@totalDrivers.ToString("N0")</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">@(((totalDrivers/(listAccounts.Count())*100).ToString("N2"))) %</MudText>
                 </MudPaper>
                 <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #2bb6c1;">
-                    <MudText Class="c-w" Typo="Typo.body2">Driver Maintenance</MudText>
-                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">4, 000</MudText>
-                    <MudText Class="c-w" Typo="Typo.body2">10.23 %</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">Total Commuters</MudText>
+                    <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">@TotalCommuters.ToString("N0")</MudText>
+                    <MudText Class="c-w" Typo="Typo.body2">@(((TotalCommuters/(listAccounts.Count())*100).ToString("N2"))) %</MudText>
                 </MudPaper>
             </div>
         </MudItem>
@@ -55,15 +55,15 @@ else
                 <div class="d-flex flex-row mt-3 justify-content-between pl-10 pr-10 mb-4">
                     <div class="d-flex flex-column align-items-center">
                         <MudText Typo="Typo.caption">Total Bookings Revenue</MudText>
-                        <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
+                        <MudText Class="c-b" Typo="Typo.h5">₱ @totalRevenue.ToString("N2")</MudText>
                     </div>
                     <div class="d-flex flex-column align-items-center">
                         <MudText Typo="Typo.caption">Cancellation Fees</MudText>
-                        <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
+                        <MudText Class="c-b" Typo="Typo.h5">₱ @cancelation.ToString("N2")</MudText>
                     </div>
                     <div class="d-flex flex-column align-items-center">
                         <MudText Typo="Typo.caption">Net Revenue</MudText>
-                        <MudText Class="c-b" Typo="Typo.h5">₱ 100,000.00</MudText>
+                        <MudText Class="c-b" Typo="Typo.h5">₱ @((totalRevenue - cancelation).ToString("N2"))</MudText>
                     </div>
                 </div>
                 <Chart Config="lineChart"></Chart>
@@ -84,7 +84,7 @@ else
         <MudItem xs=12 sm=8 md=8>
             <MudPaper Class="c-border pa-4 mb-10"  Height="auto">
                 <MudText Class="mb-5" Typo="Typo.h6">Additional Details</MudText>
-                <MudTable Elevation="0" Items="@listcommutes" Breakpoint="Breakpoint.Sm" Dense Striped Height="calc(100vh - 380px)">
+                <MudTable Elevation="0" Items="@listcommutes" Breakpoint="Breakpoint.Sm" Dense Striped Height="calc(100vh - 435px)">
                     @* <ColGroup>
                         <col />
                         <col style="width: 100px;"/>
@@ -103,7 +103,11 @@ else
                             <div class="d-flex flex-column">
                                 <MudText Typo="Typo.caption">Pickup Location: @context.Address1</MudText>
                                 <MudText Typo="Typo.caption">Destination: @context.Address2</MudText>
-                                <MudText Typo="Typo.caption">@(context.CommuteDate.ToDateTime() == null ? "" : context.CommuteDate.ToDateTime()?.ToString("MMMM dd, yyyy hh:mm tt"))</MudText>
+                                <MudText Typo="Typo.caption">
+                                    <i>
+                                    @(context.CommuteDate.ToDateTime() == null ? "" : context.CommuteDate.ToDateTime()?.ToString("MMMM dd, yyyy hh:mm tt"))
+                                    </i>
+                                </MudText>
                             </div>
                         </MudTd>
                         <MudTd Style="text-align:end;" DataLabel="Fare">₱ @Convert.ToDecimal(context.Fare).ToString("N2")</MudTd>
@@ -138,6 +142,9 @@ else
     List<UserAccountModel> listAccounts = new();
     List<CommuteModel> listcommutes = new();
     private bool IsLoading = true;
+    private decimal totalRevenue, cancelation, totalBooking, totalDrivers, todayTotalBooking,TotalCommuters;
+    private decimal totalBookingPercentage, totalDriversPercentage, todayTotalBookingPercentage, TotalCommutersPercentage;
+    string[] listYears = {};
     protected override async Task OnInitializedAsync()
     {
         await GetList();
@@ -150,12 +157,19 @@ else
     {
         listAccounts = await _accountService.GetUsers();
         listcommutes = await _commuteService.GetCommutes();
-        foreach(var comm in listcommutes){
+        foreach(var comm in listcommutes) {
             comm.DriverAccount = listAccounts.Where( e => e.Uid == comm.DriverUid).FirstOrDefault();
+            comm.PassengerAccount = listAccounts.Where( e => e.Uid == comm.PassengerUid).FirstOrDefault();
         }
         listcommutes = listcommutes
             .OrderByDescending(c => c.CommuteDate.ToDateTime())
             .ToList();
+        totalRevenue = listcommutes.Sum( c => c.Fare);
+        cancelation = listcommutes.Where( e => e.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled).Count() * 3;
+        todayTotalBooking = listcommutes.Where( e => e.CommuteDate.ToDateTime()?.Date == DateTime.Now.Date).Count();
+        totalBooking = listcommutes.Count();
+        totalDrivers = listAccounts.Where( e => e.AccountType == Enums.Enum.AccountType.Driver).Count();
+        TotalCommuters = listAccounts.Where( e => e.AccountType == Enums.Enum.AccountType.Commuter).Count();
     }
     
     private void LineChartSetUp()
@@ -173,12 +187,32 @@ else
             }
         };
 
-        foreach (string months in new[] { "2024", "2025", "2026", "2027", "2028" })
-        {
-            lineChart.Data.Labels.Add(months);
-        }
+        listYears = listcommutes
+            .Select(c => c.CommuteDate.ToDateTime()?.Year) // Get years from ToDateTime
+            .Where(year => year.HasValue) // Filter out null years
+            .Distinct() // Get unique years
+            .OrderBy(year => year.Value) // Order by year in ascending order
+            .Select(year => year.Value.ToString()) // Convert years to strings
+            .ToArray();
 
-        LineDataset<int> dataset = new LineDataset<int>(new[] { 6, 5, 3, 7 })
+        List<decimal> totalBookingsRevenue = new();
+        List<decimal> totalCalcellationRevenue = new();
+        List<decimal> totalNetRevenue = new();
+
+        foreach (string year in listYears)
+        {
+            lineChart.Data.Labels.Add(year);
+            
+            //For graph
+            decimal totalBookingRevenue = listcommutes.Where(c => c.CommuteDate.ToDateTime()?.Year.ToString() == year).Sum( e => e.Fare);
+            decimal cancelationRevenue = listcommutes.Where(c => c.CommuteDate.ToDateTime()?.Year.ToString() == year && c.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled).ToList().Count() * 3;
+            decimal net = totalBookingRevenue - cancelation;
+            totalNetRevenue.Add(net);
+            totalCalcellationRevenue.Add(cancelationRevenue);
+            totalBookingsRevenue.Add(totalBookingRevenue);
+        }
+        
+        LineDataset<decimal> dataset = new LineDataset<decimal>(totalBookingsRevenue.ToArray())
         {
             Label = "Total Bookings",
             BackgroundColor = "rgba(0, 0, 0, 0)",
@@ -186,7 +220,7 @@ else
             BorderWidth = 2,                                      // Smooth curve
             CubicInterpolationMode = ChartJs.Blazor.Common.Enums.CubicInterpolationMode.Monotone               // Interpolation mode
         };
-        LineDataset<int> dataset1 = new LineDataset<int>(new[] { 1, 7, 4, 6 })
+        LineDataset<decimal> dataset1 = new LineDataset<decimal>(totalCalcellationRevenue.ToArray())
         {
             Label = "Cancellation Fees",
             BackgroundColor = "rgba(0, 0, 0, 0)",
@@ -194,7 +228,7 @@ else
             BorderWidth = 2,                                      // Smooth curve
             CubicInterpolationMode = ChartJs.Blazor.Common.Enums.CubicInterpolationMode.Monotone               // Interpolation mode
         };
-        LineDataset<int> dataset2 = new LineDataset<int>(new[] { 7, 1, 10, 15 })
+        LineDataset<decimal> dataset2 = new LineDataset<decimal>(totalNetRevenue.ToArray())
         {
             Label = "Net Revenue",
             BackgroundColor = "rgba(0, 0, 0, 0)",
@@ -202,7 +236,7 @@ else
             BorderWidth = 2,                                      // Smooth curve
             CubicInterpolationMode = ChartJs.Blazor.Common.Enums.CubicInterpolationMode.Monotone               // Interpolation mode
         };
-
+        
 
         lineChart.Data.Datasets.Add(dataset);
         lineChart.Data.Datasets.Add(dataset1);
@@ -223,26 +257,40 @@ else
             }
         };
 
+        List<decimal> monthlyRevenues = new();
+        List<decimal> cancelationRevenues = new();
+        List<decimal> monthlyNetRevenues = new();
+        for(int  i = 1 ; i <= 12; i++)
+        {
+            decimal totalBookingRevenue = listcommutes.Where(c => c.CommuteDate.ToDateTime()?.Year == DateTime.Now.Year && c.CommuteDate.ToDateTime()?.Month == i).Sum( e => e.Fare);
+            decimal cancelationRevenue = listcommutes.Where(c => c.CommuteDate.ToDateTime()?.Year == DateTime.Now.Year && c.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled && c.CommuteDate.ToDateTime()?.Month == i).ToList().Count() * 3;
+            decimal net = totalBookingRevenue - cancelationRevenue;
+            monthlyNetRevenues.Add(net);
+            monthlyRevenues.Add(totalBookingRevenue);
+            cancelationRevenues.Add(cancelationRevenue);
+        }
+
+
         foreach (string months in new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" })
         {
             barChart.Data.Labels.Add(months);
         }
 
-        BarDataset<int> dataset = new BarDataset<int>(new[] { 6, 5, 3, 7 })
+        BarDataset<decimal> dataset = new BarDataset<decimal>(monthlyRevenues.ToArray())
         {
             Label = "Total Bookings",
             BackgroundColor = ColorUtil.ColorHexString(54, 162, 235),
             BorderColor = ColorUtil.ColorHexString(54, 162, 235),
             BorderWidth = 2,                                   
         };
-        BarDataset<int> dataset1 = new BarDataset<int>(new[] { 1, 7, 4, 6 })
+        BarDataset<decimal> dataset1 = new BarDataset<decimal>(cancelationRevenues.ToArray())
         {
             Label = "Cancellation Fees",
             BackgroundColor = ColorUtil.ColorHexString(255, 205, 86),
             BorderColor = ColorUtil.ColorHexString(255, 205, 86), 
             BorderWidth = 2,                                           
         };
-        BarDataset<int> dataset2 = new BarDataset<int>(new[] { 7, 1, 10, 15 })
+        BarDataset<decimal> dataset2 = new BarDataset<decimal>(monthlyNetRevenues.ToArray())
         {
             Label = "Net Revenue",
             BackgroundColor = ColorUtil.ColorHexString(169, 169, 169),
