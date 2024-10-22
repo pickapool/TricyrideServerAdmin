@@ -88,3 +88,6 @@ a, .btn-link {
     top: 45%;
     left: 45%;
 }
+.mud-avatar {
+    border-radius: 20% !important;
+}
