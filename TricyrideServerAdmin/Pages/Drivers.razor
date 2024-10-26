@@ -1,0 +1,142 @@
+@page "/drivers"
+@if (IsLoading)
+{
+    <MudProgressCircular Class="global-loader" Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true"></MudProgressCircular>
+}
+else
+{
+    <MudTable Class="ma-2" Style="width:100vw; overflow: auto;" Height="calc(100vh - 180px)" Items="@listAccounts" Hover="true" Filter="new Func<UserAccountModel,bool>(FilterFunc)" FixedFooter FixedHeader>
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Drivers List</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" 
+                Class="mt-0" Immediate></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="UID" T="CommuteModel">UID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="Driver" T="CommuteModel">Driver</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="Username" T="CommuteModel">Username</MudTableSortLabel></MudTh>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="Address" T="CommuteModel">Address</MudTableSortLabel></MudTh>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="Contact #" T="CommuteModel">Contact #</MudTableSortLabel></MudTh>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="Status" T="CommuteModel">Status</MudTableSortLabel></MudTh>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="Action" T="CommuteModel">Action</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="UID">@context.Uid</MudTd>
+            <MudTd DataLabel="Driver">
+                <div class="d-flex flex-row align-items-center gap-2">
+                    <MudAvatar>
+                        <MudImage Src="@(context.ProfilePicture == null || String.IsNullOrEmpty(context.ProfilePicture) ? "images/blank_profile.png" : context.ProfilePicture)"></MudImage>
+                    </MudAvatar>
+                    <div class="d-flex flex-column">
+                        <MudText Typo="Typo.button">@(context.ProfilePicture == null ? "Not Occupied" : context.GetFullName())</MudText>
+                        <MudText Typo="Typo.caption">@(context.ProfilePicture == null ? "" : context.Email)</MudText>
+                    </div>
+                    
+                </div>
+            </MudTd>
+            <MudTd DataLabel="Date">@context.Username</MudTd>
+            <MudTd DataLabel="Fare">@context.Address</MudTd>
+            <MudTd Class="text-center" DataLabel="Fare">@context.PhoneNumber</MudTd>
+            <MudTd Class="text-center" DataLabel="Status">
+                @if(context.IsApproved == null)
+                {
+                    <MudChip T="string" Color="Color.Warning" Size="Size.Small">Pending</MudChip>
+                } else if(context.IsApproved == true) {
+                    <MudChip T="string" Color="Color.Success" Size="Size.Small">Approved</MudChip>
+                } else {
+                    <MudChip T="string" Color="Color.Error" Size="Size.Small">Rejected</MudChip>
+                }
+            </MudTd>
+            <MudTd Class='text-center pa-2'>
+                 <MudMenu Icon='@Icons.Material.Filled.MoreVert' AnchorOrigin='Origin.TopLeft'
+                    TransformOrigin='Origin.TopRight' Dense='true' Size='Size.Small'>
+                        <MudMenuItem>
+                            <div class='d-flex align-center gap-2 '>
+                                <MudIcon Icon='@Icons.Material.Filled.Preview' Size='Size.Small' />
+                                <MudText Typo='Typo.body2'>View</MudText>
+                            </div>
+                        </MudMenuItem>
+                        <MudMenuItem OnClick="()=> OpenConfirmDialog(Enums.Enum.Action.Approve, context)">
+                            <div class='d-flex align-center gap-2 '>
+                                <MudIcon Icon='@Icons.Material.Filled.Check' Size='Size.Small' />
+                                <MudText Typo='Typo.body2'>Approve</MudText>
+                            </div>
+                        </MudMenuItem>
+                        <MudMenuItem OnClick="()=> OpenConfirmDialog(Enums.Enum.Action.Reject, context)">
+                            <div class='d-flex align-center gap-2 '>
+                                <MudIcon Icon='@Icons.Material.Filled.Cancel' Size='Size.Small' />
+                                <MudText Typo='Typo.body2'>Reject</MudText>
+                            </div>
+                        </MudMenuItem>
+                </MudMenu>
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+@code {
+    List<UserAccountModel> listAccounts = new();
+    private string searchString = "";
+    private bool IsLoading = true;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetList();
+        IsLoading = false;
+        StateHasChanged();
+    }
+    private async Task GetList()
+    {
+        listAccounts = await _accountService.GetUsers();
+    }
+    private bool FilterFunc(UserAccountModel element)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Username.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.GetFullName().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+    private async Task OpenConfirmDialog(Enums.Enum.Action action, UserAccountModel user)
+    {
+     
+        var parameters = new DialogParameters<ConfirmDialog>
+        {
+            { x => x.ContentText, "Do you really want to "+ action.ToString().ToLower() +" these record?" },
+            { x => x.ButtonText, "Yes, " + action.ToString() },
+            { x => x.Color, action == Enums.Enum.Action.Approve ? Color.Success : Color.Error }
+        };
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall, CloseOnEscapeKey = false, BackdropClick = false };
+
+        var dialog = await _dialogService.ShowAsync<ConfirmDialog>(action.ToString(), parameters, options);
+        var dialogResult = await dialog.Result;
+        if (!dialogResult.Canceled)
+        {
+            try {
+                user.IsApproved = action == Enums.Enum.Action.Approve ? true : false;
+                await _accountService.UpdateUser(user);
+                Extensions.ShowSnackbar($"Account was successfully {Enums.Enum.Action.Approve.ToString()}d.", Variant.Filled, _snackBar, Severity.Error);
+            } catch(Exception ee) {
+                Console.WriteLine(ee.Message);
+                Extensions.ShowSnackbar("Sorry there was a problem updating the account.", Variant.Filled, _snackBar, Severity.Error);
+            } 
+        }
+
+    }
+
+}

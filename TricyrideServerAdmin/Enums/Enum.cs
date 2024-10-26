@@ -13,5 +13,14 @@
             Cancelled,
             Done,
         }
+        public enum Action
+        {
+            Add,
+            Edit,
+            Reject,
+            Approve,
+            Remove,
+            Delete
+        }
     }
 }

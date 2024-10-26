@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Firebase.Database;
+using Newtonsoft.Json;
 using TricyrideServerAdmin.Models;
 
 namespace TricyrideServerAdmin.Services.AccountServices
@@ -48,10 +49,16 @@ namespace TricyrideServerAdmin.Services.AccountServices
                 ProfilePicture = d.Object.ProfilePicture,
                 AccountType = d.Object.AccountType,
                 DateOfBirth = d.Object.DateOfBirth,
-                Address = d.Object.Address
+                Address = d.Object.Address,
+                IsApproved = d.Object.IsApproved
             }).ToList();
         }
-
-
+        public async Task UpdateUser(UserAccountModel user)
+        {
+            var json = JsonConvert.SerializeObject(user);
+            await _firebaseClient
+                .Child($"Accounts/{user.Uid}/")
+                .PutAsync(json);
+        }
     }
 }

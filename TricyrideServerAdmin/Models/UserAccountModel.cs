@@ -15,6 +15,7 @@ namespace TricyrideServerAdmin.Models
         public AccountType AccountType { get; set; }
         public string DateOfBirth { get; set; }
         public string Address { get; set; }
+        public bool? IsApproved { get; set; }
 
         // Method to get the full name
         public string GetFullName()

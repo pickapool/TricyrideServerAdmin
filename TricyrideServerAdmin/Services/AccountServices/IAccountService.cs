@@ -6,5 +6,6 @@ namespace TricyrideServerAdmin.Services.AccountServices
     {
         Task<UserAccountResponse> SignInWithEmailAndPassword(string email, string password);
         Task<List<UserAccountModel>> GetUsers();
+        Task UpdateUser(UserAccountModel user);
     }
 }
