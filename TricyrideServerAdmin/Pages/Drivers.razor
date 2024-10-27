@@ -20,7 +20,7 @@ else
                     <div class="d-flex flex-row gap-2 align-items-center">
                         @foreach (var progressBar in progressBarsPending)
                         {
-                            <MudProgressLinear style="width: 100px;" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
+                            <MudProgressLinear style="width: 100px;" Striped="true" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
                         }
                         <MudText Typo="Typo.subtitle1">@(percent1.ToString("N2")+"%")</MudText>
                     </div>
@@ -30,7 +30,7 @@ else
                     <div class="d-flex flex-row gap-2 align-items-center">
                         @foreach (var progressBar in progressBarsRejected)
                         {
-                            <MudProgressLinear style="width: 100px;" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
+                            <MudProgressLinear style="width: 100px;" Striped="true" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
                         }
                         <MudText Typo="Typo.subtitle1">@(percent2.ToString("N2")+"%")</MudText>
                     </div>
@@ -40,7 +40,7 @@ else
                     <div class="d-flex flex-row gap-2 align-items-center">
                         @foreach (var progressBar in progressBarsApproved)
                         {
-                            <MudProgressLinear style="width: 100px;" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
+                            <MudProgressLinear style="width: 100px;" Striped="true" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
                         }
                         <MudText Typo="Typo.subtitle1">@(percent3.ToString("N2")+"%")</MudText>
                     </div>
