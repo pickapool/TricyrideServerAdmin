@@ -1,0 +1,76 @@
+<MudDialog>
+    <DialogContent>
+        <MudGrid Spacing="3" Class="pa-2">
+            <MudItem xs="12" xl=6 md="4" sm="4">
+                <MudImage Elevation="2" Style="width: 100%;" ObjectFit="ObjectFit.Fill" Src="@(UserAccount.ProfilePicture == null || String.IsNullOrEmpty(UserAccount.ProfilePicture) ? "images/blank_profile.png" : UserAccount.ProfilePicture)"></MudImage>
+            </MudItem>
+            <MudItem xs="12" xl=6 md="8" sm="8">
+                <MudPaper Elevation="0" Class="d-flex flex-column gap-1">
+                    <MudText Typo="Typo.caption"><b>UID</b> : @UserAccount.Uid</MudText>
+                    <MudText Typo="Typo.caption"><b>Fullname</b> : @UserAccount.GetFullName()</MudText>
+                    <MudText Typo="Typo.caption"><b>Address</b>  : @UserAccount.Address</MudText>
+                    <MudText Typo="Typo.caption"><b>Date of Birth</b> : @UserAccount.DateOfBirth</MudText>
+                    <MudText Typo="Typo.caption"><b>Email</b> : @UserAccount.Email</MudText>
+                    <MudText Typo="Typo.caption"><b>Contact #</b> : @UserAccount.PhoneNumber</MudText>
+                    <MudText Typo="Typo.caption"><b>Username</b> : @UserAccount.Username</MudText>
+                    <MudText Typo="Typo.caption"><b>Status :</b></MudText>
+                    <div style="width: 100px;">
+                        @if(UserAccount.IsApproved == null)
+                        {
+                            <MudChip T="string" Color="Color.Warning" Size="Size.Small">Pending</MudChip>
+                        } else if(UserAccount.IsApproved == true) {
+                            <MudChip T="string" Color="Color.Success" Size="Size.Small">Approved</MudChip>
+                        } else {
+                            <MudChip T="string" Color="Color.Error" Size="Size.Small">Rejected</MudChip>
+                        }
+                    </div>
+                </MudPaper>
+            </MudItem>
+        </MudGrid> 
+        <div class="d-flex flex-row justify-content-center gap-4 mt-4">
+            <MudButton OnClick="()=> OpenConfirmDialog(Enums.Enum.Action.Approve)" Variant="Variant.Filled" Color="Color.Success">Approve</MudButton>
+            <MudButton OnClick="()=> OpenConfirmDialog(Enums.Enum.Action.Reject)" Variant="Variant.Filled" Color="Color.Error">Reject</MudButton>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public UserAccountModel UserAccount { get; set; }
+    [Parameter]
+    public Color Color { get; set; }
+    @* private void Submit() => MudDialog.Close(DialogResult.Ok(true)); *@
+    private void Cancel() => MudDialog.Cancel();
+    private async Task OpenConfirmDialog(Enums.Enum.Action action)
+    {
+     
+        var parameters = new DialogParameters<ConfirmDialog>
+        {
+            { x => x.ContentText, "Do you really want to "+ action.ToString().ToLower() +" these record?" },
+            { x => x.ButtonText, "Yes, " + action.ToString() },
+            { x => x.Color, action == Enums.Enum.Action.Approve ? Color.Success : Color.Error }
+        };
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall, CloseOnEscapeKey = false, BackdropClick = false };
+
+        var dialog = await _dialogService.ShowAsync<ConfirmDialog>(action.ToString(), parameters, options);
+        var dialogResult = await dialog.Result;
+        if (!dialogResult.Canceled)
+        {
+            try {
+                UserAccount.IsApproved = action == Enums.Enum.Action.Approve ? true : false;
+                await _accountService.UpdateUser(UserAccount);
+                Extensions.ShowSnackbar($"Account was successfully {Enums.Enum.Action.Approve.ToString()}d.", Variant.Filled, _snackBar, Severity.Error);
+                MudDialog.Close(DialogResult.Ok(true));
+            } catch(Exception ee) {
+                Console.WriteLine(ee.Message);
+                Extensions.ShowSnackbar("Sorry there was a problem updating the account.", Variant.Filled, _snackBar, Severity.Error);
+            } 
+        }
+    }
+}

@@ -51,7 +51,7 @@ else
             <MudTd Class='text-center pa-2'>
                  <MudMenu Icon='@Icons.Material.Filled.MoreVert' AnchorOrigin='Origin.TopLeft'
                     TransformOrigin='Origin.TopRight' Dense='true' Size='Size.Small'>
-                        <MudMenuItem>
+                        <MudMenuItem OnClick="()=> ViewUserDialog(context)">
                             <div class='d-flex align-center gap-2 '>
                                 <MudIcon Icon='@Icons.Material.Filled.Preview' Size='Size.Small' />
                                 <MudText Typo='Typo.body2'>View</MudText>
@@ -136,7 +136,19 @@ else
                 Extensions.ShowSnackbar("Sorry there was a problem updating the account.", Variant.Filled, _snackBar, Severity.Error);
             } 
         }
-
     }
+    private async Task ViewUserDialog(UserAccountModel user){
+        var parameters = new DialogParameters<ViewUserDialog>
+        {
+            { x => x.UserAccount, user }
+        };
 
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.Small, CloseOnEscapeKey = false, BackdropClick = false };
+
+        var dialog = await _dialogService.ShowAsync<ViewUserDialog>("View account", parameters, options);
+        var dialogResult = await dialog.Result;
+        if (!dialogResult.Canceled)
+        {
+        }
+    }
 }
