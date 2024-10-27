@@ -132,7 +132,7 @@ else
     private string searchString = "";
     private bool IsLoading = true;
     private LineConfig lineChart;
-    decimal percent1, percent2, percent3;
+    float percent1 = 0.0f, percent2 = 0.0f, percent3 = 0.0f;
     private List<ProgressBarModel> progressBarsPending;
     private List<ProgressBarModel> progressBarsApproved;
     private List<ProgressBarModel> progressBarsRejected;
@@ -302,25 +302,25 @@ else
         progressBarsApproved = new List<ProgressBarModel>();
         progressBarsRejected = new List<ProgressBarModel>();
 
-        decimal countPendings = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.IsApproved == null).Count();
-        decimal percent1 = ( countPendings / listAccounts.Count() ) * 100;
+        float totalCount = listAccounts.Count();
+        float countPendings = listAccounts.Count(e => e.CreationDate?.Year == DateTime.Now.Year && e.IsApproved == null);
+        float countRejected = listAccounts.Count(e => e.CreationDate?.Year == DateTime.Now.Year && e.IsApproved != null && e.IsApproved == false);
+        float countApproved = listAccounts.Count(e => e.CreationDate?.Year == DateTime.Now.Year && e.IsApproved != null && e.IsApproved == true);
 
-        decimal countRejected = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.IsApproved != null && e.IsApproved == false).Count();
-        decimal percent2 = ( countRejected / listAccounts.Count() ) * 100;
+        float percentagePerBar = 100 / 5; // Assuming 5 progress bars
+        CalculateProgressBars(countPendings, progressBarsPending, percentagePerBar, totalCount, Color.Warning);
+        CalculateProgressBars(countApproved, progressBarsApproved, percentagePerBar, totalCount, Color.Success);
+        CalculateProgressBars(countRejected, progressBarsRejected, percentagePerBar, totalCount, Color.Error);
 
-        decimal countApproved = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.IsApproved != null && e.IsApproved == true).Count();
-        decimal percent3 = ( countApproved / listAccounts.Count() ) * 100;
-        
-        decimal percentagePerBar = 100 / 5;
-        CalculateProgressBars(countPendings, progressBarsPending, percentagePerBar , listAccounts.Count());
-        CalculateProgressBars(countApproved, progressBarsRejected, percentagePerBar , listAccounts.Count());
-        CalculateProgressBars(countRejected, progressBarsApproved, percentagePerBar , listAccounts.Count());
+        percent1 = (totalCount > 0) ? (countPendings / totalCount) * 100 : 0;
+        percent2 = (totalCount > 0) ? (countRejected / totalCount) * 100 : 0;
+        percent3 = (totalCount > 0) ? (countApproved / totalCount) * 100 : 0;
         
     }
-    void CalculateProgressBars(decimal count, List<ProgressBarModel> progressBars, decimal percentagePerBar,decimal totalCount)
+    void CalculateProgressBars(float count, List<ProgressBarModel> progressBars, float percentagePerBar,float totalCount, Color color)
     {
-        decimal percentage = (count / totalCount) * 100;
-
+        float percentage = (count / totalCount) * 100;
+        
         for (int i = 0; i < 5; i++)
         {
             int value;
@@ -339,9 +339,11 @@ else
 
             progressBars.Add(new ProgressBarModel
             {
-                Value = value
+                Value = value,
+                Color = color
             });
         }
+        
     }
 
 }
