@@ -1,9 +1,31 @@
 @page "/reports"
+<PageTitle>Report | Drivers</PageTitle>
 
+@if (IsLoading)
+{
+    <MudProgressCircular Class="global-loader" Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true"></MudProgressCircular>
+}
+else
+{
+    <MudGrid Spacing="1" Class="pa-2">
+        <MudItem xs="12">
+            <MudPaper Elevation="1" Height="250px">
+                asdsad
+            </MudPaper>
+        </MudItem>
+         <MudItem xs="12">
+            <MudPaper Elevation="1" Height="calc(100vh - 320px)">
+                asdsad
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
 @code {
+    private bool IsLoading = true;
     protected override async Task OnInitializedAsync()
     {
         MainLayout.Title = "Reports";
+        IsLoading = false;
         StateHasChanged();
     }
 }
