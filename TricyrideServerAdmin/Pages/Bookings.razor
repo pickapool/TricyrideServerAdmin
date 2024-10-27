@@ -1,4 +1,6 @@
 @page "/bookings"
+<PageTitle>Bookings</PageTitle>
+
 @if (IsLoading)
 {
     <MudProgressCircular Class="global-loader" Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true"></MudProgressCircular>
@@ -78,6 +80,7 @@ else
     private bool IsLoading = true;
     protected override async Task OnInitializedAsync()
     {
+        MainLayout.Title = "Bookings";
         await GetList();
         IsLoading = false;
         StateHasChanged();
