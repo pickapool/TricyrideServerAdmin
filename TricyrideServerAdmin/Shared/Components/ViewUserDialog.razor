@@ -65,7 +65,7 @@
             try {
                 UserAccount.IsApproved = action == Enums.Enum.Action.Approve ? true : false;
                 await _accountService.UpdateUser(UserAccount);
-                Extensions.ShowSnackbar($"Account was successfully {Enums.Enum.Action.Approve.ToString()}d.", Variant.Filled, _snackBar, Severity.Error);
+                Extensions.ShowSnackbar($"Account was successfully {(action == Enums.Enum.Action.Approve ? "Approved":"Rejected")}.", Variant.Filled, _snackBar, Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
             } catch(Exception ee) {
                 Console.WriteLine(ee.Message);

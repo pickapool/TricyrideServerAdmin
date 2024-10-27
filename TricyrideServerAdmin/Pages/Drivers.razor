@@ -144,7 +144,7 @@ else
             try {
                 user.IsApproved = action == Enums.Enum.Action.Approve ? true : false;
                 await _accountService.UpdateUser(user);
-                Extensions.ShowSnackbar($"Account was successfully {Enums.Enum.Action.Approve.ToString()}d.", Variant.Filled, _snackBar, Severity.Success);
+                Extensions.ShowSnackbar($"Account was successfully {(action == Enums.Enum.Action.Approve ? "Approved":"Rejected")}.", Variant.Filled, _snackBar, Severity.Success);
             } catch(Exception ee) {
                 Console.WriteLine(ee.Message);
                 Extensions.ShowSnackbar("Sorry there was a problem updating the account.", Variant.Filled, _snackBar, Severity.Error);
