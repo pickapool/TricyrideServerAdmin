@@ -16,6 +16,7 @@ namespace TricyrideServerAdmin.Models
         public string DateOfBirth { get; set; }
         public string Address { get; set; }
         public bool? IsApproved { get; set; }
+        public DateTime? CreationDate { get; set; }
 
         // Method to get the full name
         public string GetFullName()

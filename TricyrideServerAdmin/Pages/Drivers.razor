@@ -6,18 +6,48 @@
 else
 {
     <MudGrid Spacing="2" Class="pa-3">
-        <MudItem xs="12" sm="8" xl="8">
-            <MudPaper Elevation="0" Height="370px">
-                asdasd
+        <MudItem xs="12" sm="12" md="8" xl="8">
+            <MudPaper Elevation="0" Height="auto">
+                <Chart Config="lineChart" Height="100"></Chart>
             </MudPaper>
         </MudItem>
-        <MudItem xs="12" sm="4" xl="4">
-            <MudPaper Elevation="1" Height="370px">
-                asdasd
+        <MudItem Class="d-flex align-items-stretch" xs="12" sm="12" md="4" xl="4">
+            <MudPaper Class="pa-6 d-flex flex-column justify-space-between gap-4" Elevation="1" Width="100%">
+                <MudText Typo="Typo.h6">Summary</MudText>
+                <div>
+                    <MudText Typo="Typo.subtitle1">Pendings</MudText>
+                    <div class="d-flex flex-row gap-2 align-items-center">
+                        @foreach (var progressBar in progressBarsPending)
+                        {
+                            <MudProgressLinear style="width: 100px;" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
+                        }
+                        <MudText Typo="Typo.subtitle1">@(percent1.ToString("N2")+"%")</MudText>
+                    </div>
+                </div>
+                <div>
+                    <MudText Typo="Typo.subtitle1">Rejected</MudText>
+                    <div class="d-flex flex-row gap-2 align-items-center">
+                        @foreach (var progressBar in progressBarsRejected)
+                        {
+                            <MudProgressLinear style="width: 100px;" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
+                        }
+                        <MudText Typo="Typo.subtitle1">@(percent2.ToString("N2")+"%")</MudText>
+                    </div>
+                </div>
+                <div>
+                    <MudText Typo="Typo.subtitle1">Approved</MudText>
+                    <div class="d-flex flex-row gap-2 align-items-center">
+                        @foreach (var progressBar in progressBarsApproved)
+                        {
+                            <MudProgressLinear style="width: 100px;" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
+                        }
+                        <MudText Typo="Typo.subtitle1">@(percent3.ToString("N2")+"%")</MudText>
+                    </div>
+                </div>
             </MudPaper>
         </MudItem>
         <MudItem xs="12">
-            <MudTable Style=" overflow: auto;" Height="calc(100vh - 560px)" Items="@listAccounts" Hover="true" Filter="new Func<UserAccountModel,bool>(FilterFunc)" FixedFooter FixedHeader>
+            <MudTable Style=" overflow: auto;" Height="auto" Items="@listAccounts" Hover="true" Filter="new Func<UserAccountModel,bool>(FilterFunc)" FixedFooter FixedHeader>
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Drivers List</MudText>
                     <MudSpacer />
@@ -101,6 +131,11 @@ else
     List<UserAccountModel> listAccounts = new();
     private string searchString = "";
     private bool IsLoading = true;
+    private LineConfig lineChart;
+    decimal percent1, percent2, percent3;
+    private List<ProgressBarModel> progressBarsPending;
+    private List<ProgressBarModel> progressBarsApproved;
+    private List<ProgressBarModel> progressBarsRejected;
     protected override async Task OnInitializedAsync()
     {
         await GetList();
@@ -110,6 +145,12 @@ else
     private async Task GetList()
     {
         listAccounts = await _accountService.GetUsers();
+        listAccounts = listAccounts.Where( e => e.AccountType == Enums.Enum.AccountType.Driver).ToList();
+        foreach(var e in listAccounts) {
+            var userRecord = await FirebaseAuth.DefaultInstance.GetUserAsync(e.Uid);
+            e.CreationDate =  userRecord.UserMetaData.CreationTimestamp;
+        }
+        SetupGraph();
     }
     private bool FilterFunc(UserAccountModel element)
     {
@@ -163,6 +204,144 @@ else
         var dialogResult = await dialog.Result;
         if (!dialogResult.Canceled)
         {
+            
         }
     }
+    private void SetupGraph()
+    {
+        lineChart = new LineConfig
+        {
+            Options = new LineOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Drivers Graph"
+                },
+                Scales = new Scales
+                {
+                    YAxes = new List<CartesianAxis>
+                    {
+                        new LinearCartesianAxis
+                        {
+                            ScaleLabel = new ScaleLabel
+                            {
+                                LabelString = "Count",
+                                Display = true
+                            }, 
+                            Ticks = new LinearCartesianTicks {
+                                Max = listAccounts.Count()/2
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        List<int> listPendings = new();
+        List<int> listRejected = new();
+        List<int> listApproved = new();
+        List<int> listDrivers = new();
+        for(int  i = 1 ; i <= 12; i++)
+        {
+            int drivers = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.CreationDate?.Month == i).Count();
+            int rejecteds = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.CreationDate?.Month == i && e.IsApproved != null && e.IsApproved == false).Count();
+            int pendings = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.CreationDate?.Month == i && e.IsApproved == null).Count();
+            int approved = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.CreationDate?.Month == i && e.IsApproved != null && e.IsApproved == true).Count();
+
+            listDrivers.Add(drivers);
+            listPendings.Add(pendings);
+            listRejected.Add(rejecteds);
+            listApproved.Add(approved);
+        }
+        
+
+        foreach (string months in new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" })
+        {
+            lineChart.Data.Labels.Add(months);
+        }
+
+        LineDataset<int> pendingDataset = new LineDataset<int>(listPendings.ToArray())
+        {
+            Label = "Pending",
+            BackgroundColor = "rgba(0, 0, 0, 0)",
+            BorderColor = ColorUtil.ColorHexString(255, 206, 86),
+            BorderWidth = 3,
+        };
+        LineDataset<int> approvedDataset = new LineDataset<int>(listApproved.ToArray())
+        {
+            Label = "Approved",
+            BackgroundColor = "rgba(0, 0, 0, 0)",
+            BorderColor = ColorUtil.ColorHexString(75, 192, 192),
+            BorderWidth = 3,
+        };
+        LineDataset<int> rejectedDataset = new LineDataset<int>(listRejected.ToArray())
+        {
+            Label = "Rejected",
+            BackgroundColor = "rgba(0, 0, 0, 0)",
+            BorderColor = ColorUtil.ColorHexString(255, 99, 132),
+            BorderWidth = 3,
+        };
+        BarDataset<int> barDataset = new BarDataset<int>(listDrivers.ToArray())
+        {
+            Label = "Drivers",
+            BackgroundColor = "rgba(54, 162, 235, 1)",
+            BorderColor = "rgba(54, 162, 235, 1)",
+            BorderWidth = 4,
+        };
+
+        lineChart.Data.Datasets.Add(pendingDataset);
+        lineChart.Data.Datasets.Add(approvedDataset);
+        lineChart.Data.Datasets.Add(rejectedDataset);
+        
+        lineChart.Data.Datasets.Add(barDataset);
+
+        //progressbar
+        progressBarsPending = new List<ProgressBarModel>();
+        progressBarsApproved = new List<ProgressBarModel>();
+        progressBarsRejected = new List<ProgressBarModel>();
+
+        decimal countPendings = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.IsApproved == null).Count();
+        decimal percent1 = ( countPendings / listAccounts.Count() ) * 100;
+
+        decimal countRejected = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.IsApproved != null && e.IsApproved == false).Count();
+        decimal percent2 = ( countRejected / listAccounts.Count() ) * 100;
+
+        decimal countApproved = listAccounts.Where( e => e.CreationDate?.Year == DateTime.Now.Year && e.IsApproved != null && e.IsApproved == true).Count();
+        decimal percent3 = ( countApproved / listAccounts.Count() ) * 100;
+        
+        decimal percentagePerBar = 100 / 5;
+        CalculateProgressBars(countPendings, progressBarsPending, percentagePerBar , listAccounts.Count());
+        CalculateProgressBars(countApproved, progressBarsRejected, percentagePerBar , listAccounts.Count());
+        CalculateProgressBars(countRejected, progressBarsApproved, percentagePerBar , listAccounts.Count());
+        
+    }
+    void CalculateProgressBars(decimal count, List<ProgressBarModel> progressBars, decimal percentagePerBar,decimal totalCount)
+    {
+        decimal percentage = (count / totalCount) * 100;
+
+        for (int i = 0; i < 5; i++)
+        {
+            int value;
+            if (percentage >= (i + 1) * percentagePerBar)
+            {
+                value = 100; // Full bar
+            }
+            else if (percentage >= i * percentagePerBar)
+            {
+                value = (int)((percentage - (i * percentagePerBar)) / percentagePerBar * 100);
+            }
+            else
+            {
+                value = 0; // Empty bar
+            }
+
+            progressBars.Add(new ProgressBarModel
+            {
+                Value = value
+            });
+        }
+    }
+
 }

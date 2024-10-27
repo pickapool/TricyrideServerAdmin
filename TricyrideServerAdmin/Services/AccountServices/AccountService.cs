@@ -58,7 +58,7 @@ namespace TricyrideServerAdmin.Services.AccountServices
             var json = JsonConvert.SerializeObject(user);
             await _firebaseClient
                 .Child($"Accounts/{user.Uid}/")
-                .PutAsync(json);
+                .PatchAsync(json);
         }
     }
 }
