@@ -9,12 +9,40 @@ else
 {
     <MudGrid Spacing="1" Class="pa-2">
         <MudItem xs="12">
-            <MudPaper Elevation="1" Height="250px">
-                asdsad
+            <MudPaper Class="d-flex flex-row align-items-center gap-4" Elevation="1" Height="auto">
+                <MudGrid Class="align-items-center pa-5" Spacing="1">
+                    <MudItem xs="12" sm="4" md="4" lg="2">
+                        <MudChart ChartType="ChartType.Donut" Width="230px" Height="230px" @bind-SelectedIndex="Index" InputData="@data" ChartOptions="@chartOptions"></MudChart>
+                    </MudItem>
+                    <MudItem xs="4" sm=2 lg="2">
+                        <div class="d-flex flex-column">
+                            <MudBadge Origin="Origin.CenterLeft" Color="Color.Primary">
+                                <MudText Class="ml-2">In Progress</MudText>
+                            </MudBadge>
+                            <MudText Typo="Typo.h6" Class="ml-2 mt-1">@totalInProgress.ToString("N0")</MudText>
+                        </div>
+                    </MudItem>
+                    <MudItem xs="5" sm=2 lg="2">
+                        <div class="d-flex flex-column">
+                            <MudBadge Origin="Origin.CenterLeft" Color="Color.Success">
+                                <MudText Class="ml-2">Canceled Bookings</MudText>
+                            </MudBadge>
+                            <MudText Class="ml-2 mt-1" Typo="Typo.h6">@totalCancel.ToString("N0")</MudText>
+                        </div>
+                    </MudItem>
+                    <MudItem xs="3" sm=2 lg="2">
+                        <div class="d-flex flex-column">
+                            <MudBadge Origin="Origin.CenterLeft" Color="Color.Warning">
+                                <MudText Class="ml-2">Completed</MudText>
+                            </MudBadge>
+                            <MudText Class="ml-2 mt-1" Typo="Typo.h6">@totalComplete.ToString("N0")</MudText>
+                        </div>
+                    </MudItem>
+                </MudGrid>
             </MudPaper>
         </MudItem>
          <MudItem xs="12">
-            <MudPaper Elevation="1" Height="calc(100vh - 320px)">
+            <MudPaper Elevation="1" Height="calc(100vh - 340px)">
                 asdsad
             </MudPaper>
         </MudItem>
@@ -22,10 +50,27 @@ else
 }
 @code {
     private bool IsLoading = true;
+    private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
+    public double[] data = {};
+    private double totalInProgress, totalCancel, totalComplete;
+    List<CommuteModel> listcommutes = new();
+    private ChartOptions chartOptions = new ChartOptions
+    {
+        ShowLegend = false
+    };
     protected override async Task OnInitializedAsync()
     {
         MainLayout.Title = "Reports";
+        await GetDate();
         IsLoading = false;
         StateHasChanged();
+    }
+    private async Task GetDate()
+    {
+        listcommutes = await _commuteService.GetCommutes();
+        totalInProgress = listcommutes.Where( c => c.CommuteStatus == Enums.Enum.CommuteStatus.InProgress).Count();
+        totalCancel = listcommutes.Where( c => c.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled).Count();
+        totalComplete = listcommutes.Where( c => c.CommuteStatus == Enums.Enum.CommuteStatus.Done).Count();
+        data = new double[3] { totalInProgress,totalCancel,totalComplete };
     }
 }
