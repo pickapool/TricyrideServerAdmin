@@ -131,16 +131,17 @@ else
         reportList = listcommutes
             .GroupBy(c => c.CommuteDate.ToDateTime()?.Date)
             .Select(g => new ReportModel
-            {
-                Date = g.Key,
-                TotalBookings = g.Count(),
-                ActiveDrivers = g.Select(c => c.DriverUid).Distinct().Count(),
-                ActiveCommuters = g.Select(c => c.PassengerUid).Distinct().Count(),
-                CompletedRides = g.Count(c => c.CommuteStatus == Enums.Enum.CommuteStatus.Done),
-                CanceledBookings = g.Count(c => c.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled),
-                Revenue = g.Sum(c => c.Fare),
-                Ratings = g.Any() ? (float)g.Average(c => c.Rating) : 0
-            })
+                {
+                    Date = g.Key,
+                    TotalBookings = g.Count(),
+                    ActiveDrivers = g.Select(c => c.DriverUid).Distinct().Count(),
+                    ActiveCommuters = g.Select(c => c.PassengerUid).Distinct().Count(),
+                    CompletedRides = g.Count(c => c.CommuteStatus == Enums.Enum.CommuteStatus.Done),
+                    CanceledBookings = g.Count(c => c.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled),
+                    Revenue = g.Sum(c => c.Fare),
+                    Ratings = g.Any() ? (float)g.Average(c => c.Rating) : 0
+                })
+            .OrderBy(report => report.Date) // Sort by Date in ascending order
             .ToList();
     }
     private async Task GetReport()
