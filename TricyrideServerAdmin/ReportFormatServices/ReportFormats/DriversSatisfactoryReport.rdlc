@@ -39,28 +39,28 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>1.78562cm</Width>
+              <Width>2.6664cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.07667cm</Width>
+              <Width>2.17219cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.60583cm</Width>
+              <Width>2.70135cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>3.49313cm</Width>
+              <Width>3.58864cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.60583cm</Width>
+              <Width>2.33093cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.60583cm</Width>
+              <Width>2.30447cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.26187cm</Width>
+              <Width>2.67488cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.60583cm</Width>
+              <Width>1.98697cm</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -361,6 +361,7 @@
                             <TextRun>
                               <Value>=Fields!Date.Value</Value>
                               <Style>
+                                <FontSize>8pt</FontSize>
                                 <Format>d</Format>
                               </Style>
                             </TextRun>
@@ -394,7 +395,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!TotalBookings.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>8pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -426,7 +429,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!ActiveDrivers.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>8pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -458,7 +463,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!ActiveCommuters.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>8pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -490,7 +497,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!CompletedRides.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>8pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -522,7 +531,9 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!CanceledBookings.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>8pt</FontSize>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -554,7 +565,10 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!Revenue.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>8pt</FontSize>
+                                <Format>n2</Format>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -586,7 +600,10 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!Ratings.Value</Value>
-                              <Style />
+                              <Style>
+                                <FontSize>8pt</FontSize>
+                                <Format>0.00;(0.00)</Format>
+                              </Style>
                             </TextRun>
                           </TextRuns>
                           <Style>
@@ -636,9 +653,9 @@
         </TablixRowHierarchy>
         <DataSetName>reportdataset</DataSetName>
         <Top>1.63724cm</Top>
-        <Left>0.76412cm</Left>
+        <Left>0.20533cm</Left>
         <Height>1.2cm</Height>
-        <Width>20.04061cm</Width>
+        <Width>20.42583cm</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -650,14 +667,14 @@
     <Height>1.11702in</Height>
     <Style />
   </Body>
-  <Width>8.5in</Width>
+  <Width>8.12251in</Width>
   <Page>
     <PageHeight>29.7cm</PageHeight>
     <PageWidth>21cm</PageWidth>
-    <LeftMargin>2cm</LeftMargin>
-    <RightMargin>2cm</RightMargin>
-    <TopMargin>2cm</TopMargin>
-    <BottomMargin>2cm</BottomMargin>
+    <LeftMargin>0cm</LeftMargin>
+    <RightMargin>0cm</RightMargin>
+    <TopMargin>0cm</TopMargin>
+    <BottomMargin>0cm</BottomMargin>
     <ColumnSpacing>0.13cm</ColumnSpacing>
     <Style />
   </Page>
