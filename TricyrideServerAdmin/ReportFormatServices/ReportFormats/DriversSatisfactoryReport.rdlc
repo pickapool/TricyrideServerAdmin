@@ -362,7 +362,7 @@
                               <Value>=Fields!Date.Value</Value>
                               <Style>
                                 <FontSize>8pt</FontSize>
-                                <Format>d</Format>
+                                <Format>MM/dd/yyyy</Format>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -648,6 +648,11 @@
             </TablixMember>
             <TablixMember>
               <Group Name="Details" />
+              <SortExpressions>
+                <SortExpression>
+                  <Value>=Fields!Date.Value</Value>
+                </SortExpression>
+              </SortExpressions>
             </TablixMember>
           </TablixMembers>
         </TablixRowHierarchy>
