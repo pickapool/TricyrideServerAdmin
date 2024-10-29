@@ -1,4 +1,5 @@
 @page "/reports"
+
 <PageTitle>Report | Drivers</PageTitle>
 
 @if (IsLoading)
@@ -48,6 +49,7 @@ else
                         <MudSpacer />
                         @* <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" 
                             Class="mt-0" Immediate></MudTextField> *@
+                        <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Download" OnClick="GetReport">Download</MudButton>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh Class="text-center">Date</MudTh>
@@ -90,12 +92,13 @@ else
     </MudGrid>
 }
 @code {
-    private bool IsLoading = true;
+    private bool IsLoading = true, IsReportLoading = false;
     private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
     public double[] data = {};
     List<ReportModel> reportList = new();
     private double totalInProgress, totalCancel, totalComplete;
     List<CommuteModel> listcommutes = new();
+    string PDF = string.Empty;
     private ChartOptions chartOptions = new ChartOptions
     {
         ShowLegend = false
@@ -128,5 +131,18 @@ else
                 Ratings = g.Any() ? (float)g.Average(c => c.Rating) : 0
             })
             .ToList();
+    }
+    private async Task GetReport()
+    {
+        IsReportLoading = true;
+        IActionResult report = _reportService.GetReport(reportList);
+        if (report is FileContentResult fileContentResult)
+        {
+            byte[] pdfBytes = fileContentResult.FileContents;
+            PDF = "data:application/pdf;base64," + Convert.ToBase64String(pdfBytes);
+            await _jsRuntime.InvokeVoidAsync("downloadFile", PDF, "report.pdf");
+            IsReportLoading = false;
+            StateHasChanged();
+        }
     }
 }
