@@ -42,9 +42,50 @@ else
             </MudPaper>
         </MudItem>
          <MudItem xs="12">
-            <MudPaper Elevation="1" Height="calc(100vh - 340px)">
-                asdsad
-            </MudPaper>
+                <MudTable Style=" overflow: auto;height: calc(100vh - 350px);"  Items="@reportList" Hover="true" FixedFooter FixedHeader>
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Report</MudText>
+                        <MudSpacer />
+                        @* <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" 
+                            Class="mt-0" Immediate></MudTextField> *@
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh Class="text-center">Date</MudTh>
+                        <MudTh Class="text-center">Total Bookings</MudTh>
+                        <MudTh Class="text-center">Active Drivers</MudTh>
+                        <MudTh Class="text-center">Active Commuters</MudTh>
+                        <MudTh Class="text-center">Completed</MudTh>
+                        <MudTh Class="text-center">Canceled</MudTh>
+                        <MudTh Class="text-center">Revenue</MudTh>
+                        <MudTh Class="text-center">Summary Rating</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd Class="text-center" DataLabel="Date">@context.Date?.ToString("MM/dd/yyyy")</MudTd>
+                        <MudTd Class="text-center" DataLabel="Total Bookings">@context.TotalBookings</MudTd>
+                        <MudTd Class="text-center" DataLabel="Active Drivers">@context.ActiveDrivers</MudTd>
+                        <MudTd Class="text-center" DataLabel="Active Commuters">@context.ActiveCommuters</MudTd>
+                        <MudTd Class="text-center" DataLabel="Completed">@context.CompletedRides</MudTd>
+                        <MudTd Class="text-center" DataLabel="Canceled">@context.CanceledBookings</MudTd>
+                        <MudTd Class='text-center pa-2' DataLabel="Revenue">₱ @context.Revenue.ToString("N2")</MudTd>
+                        <MudTd Class='text-center pa-2' DataLabel="Summary">
+                            <div class="d-flex flex-row align-items-center justify-content-center">
+                                <span>@context.Ratings.ToString("N2")</span>
+                                <MudIcon Icon="@Icons.Material.Filled.StarOutline" Size="Size.Small"></MudIcon>
+                            </div>
+                            
+                        </MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>No matching records found</MudText>
+                    </NoRecordsContent>
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                    <PagerContent>
+                        <MudTablePager />
+                    </PagerContent>
+                </MudTable>
+           
         </MudItem>
     </MudGrid>
 }
@@ -52,6 +93,7 @@ else
     private bool IsLoading = true;
     private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
     public double[] data = {};
+    List<ReportModel> reportList = new();
     private double totalInProgress, totalCancel, totalComplete;
     List<CommuteModel> listcommutes = new();
     private ChartOptions chartOptions = new ChartOptions
@@ -72,5 +114,19 @@ else
         totalCancel = listcommutes.Where( c => c.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled).Count();
         totalComplete = listcommutes.Where( c => c.CommuteStatus == Enums.Enum.CommuteStatus.Done).Count();
         data = new double[3] { totalInProgress,totalCancel,totalComplete };
+        reportList = listcommutes
+            .GroupBy(c => c.CommuteDate.ToDateTime()?.Date)
+            .Select(g => new ReportModel
+            {
+                Date = g.Key,
+                TotalBookings = g.Count(),
+                ActiveDrivers = g.Select(c => c.DriverUid).Distinct().Count(),
+                ActiveCommuters = g.Select(c => c.PassengerUid).Distinct().Count(),
+                CompletedRides = g.Count(c => c.CommuteStatus == Enums.Enum.CommuteStatus.Done),
+                CanceledBookings = g.Count(c => c.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled),
+                Revenue = g.Sum(c => c.Fare),
+                Ratings = g.Any() ? (float)g.Average(c => c.Rating) : 0
+            })
+            .ToList();
     }
 }
