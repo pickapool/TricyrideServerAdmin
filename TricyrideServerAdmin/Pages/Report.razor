@@ -49,7 +49,18 @@ else
                         <MudSpacer />
                         @* <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" 
                             Class="mt-0" Immediate></MudTextField> *@
-                        <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Download" OnClick="GetReport">Download</MudButton>
+                        <MudButton Disabled="@IsReportLoading" OnClick="GetReport" Variant="Variant.Text" Color="Color.Default">
+                            @if (IsReportLoading)
+                            {
+                                <MudProgressCircular Class="mr-4" Size="Size.Small" Indeterminate="true"/>
+                                <MudText>Downloading</MudText>
+                            }
+                            else
+                            {
+                                <MudIcon Class="mr-4" Icon="@Icons.Material.Filled.Download" OnClick="GetReport"></MudIcon>
+                                <MudText>Download</MudText>
+                            }
+                        </MudButton>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh Class="text-center">Date</MudTh>
@@ -135,6 +146,8 @@ else
     private async Task GetReport()
     {
         IsReportLoading = true;
+        StateHasChanged();
+        await Task.Delay(1500);
         IActionResult report = _reportService.GetReport(reportList);
         if (report is FileContentResult fileContentResult)
         {
