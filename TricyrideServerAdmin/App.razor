@@ -9,11 +9,13 @@
                     </Authorized>
                     <NotAuthorized>
                         <LayoutView Layout="@typeof(MainLayout)">
-                            <div class="page d-flex justify-content-center align-items-center" style="height: 100vh;">
-                                <MudPaper Class="d-flex flex-column pa-4" Elevation="3" Width="50vw" Height="50vh">
-                                    <MudTextField @bind-Value="email" Label="Email" Variant="Variant.Outlined" />
-                                    <MudTextField @bind-Value="password" InputType="InputType.Password" Label="Password" Variant="Variant.Outlined" />
-                                    <MudButton Variant="Variant.Filled" OnClick="Login" Color="Color.Primary">Primary</MudButton>
+                            <div class="page d-flex align-items-center py-4" style="height: 90vh;">
+                                <MudPaper Class="d-flex flex-column pa-4" Elevation="3" Width="30vw" Height="30vh">
+                                    <MudTextField @bind-Value="email" Label="Email" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                    Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.LockPerson"/>
+                                    <MudTextField @bind-Value="password" InputType="PasswordInput" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                     Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password"/>
+                                    <MudButton Variant="Variant.Filled" OnClick="Login" Color="Color.Primary">SIGN IN</MudButton>
                                 </MudPaper>
                             </div>
                         </LayoutView>
@@ -32,10 +34,32 @@
 @code
 {
     private string email, password;
+    bool isShow;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+    void ButtonTestclick()
+    {
+        @if (isShow)
+        {
+            isShow = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else {
+            isShow = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
     private async Task Login()
     {
         try
         {
+            if(!email.Equals("superadmin@gmail.com"))
+            {
+                Extensions.ShowSnackbar("Sorry we can't find your account.", Variant.Filled, _snackBar, Severity.Error);
+                return;
+            }
             Task<UserAccountResponse> item = _accountService.SignInWithEmailAndPassword(email, password);
             await item;
             if (item.Status == TaskStatus.RanToCompletion)
