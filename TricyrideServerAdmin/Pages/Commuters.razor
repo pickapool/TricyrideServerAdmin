@@ -1,4 +1,4 @@
-@page "/drivers"
+@page "/commuters"
 <PageTitle>Tricyride | Drivers</PageTitle>
 @if (IsLoading)
 {
@@ -7,46 +7,6 @@
 else
 {
     <MudGrid Spacing="2" Class="pa-3">
-        <MudItem xs="12" sm="12" md="8" xl="8">
-            <MudPaper Elevation="0" Height="auto">
-                <Chart Config="lineChart" Height="100"></Chart>
-            </MudPaper>
-        </MudItem>
-        <MudItem Class="d-flex align-items-stretch" xs="12" sm="12" md="4" xl="4">
-            <MudPaper Class="pa-6 d-flex flex-column justify-space-between gap-4" Elevation="1" Width="100%">
-                <MudText Typo="Typo.h6">Summary</MudText>
-                <div>
-                    <MudText Typo="Typo.subtitle1">Pendings</MudText>
-                    <div class="d-flex flex-row gap-2 align-items-center">
-                        @foreach (var progressBar in progressBarsPending)
-                        {
-                            <MudProgressLinear style="width: 100px;" Striped="true" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
-                        }
-                        <MudText Typo="Typo.subtitle1">@(percent1.ToString("N2")+"%")</MudText>
-                    </div>
-                </div>
-                <div>
-                    <MudText Typo="Typo.subtitle1">Rejected</MudText>
-                    <div class="d-flex flex-row gap-2 align-items-center">
-                        @foreach (var progressBar in progressBarsRejected)
-                        {
-                            <MudProgressLinear style="width: 100px;" Striped="true" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
-                        }
-                        <MudText Typo="Typo.subtitle1">@(percent2.ToString("N2")+"%")</MudText>
-                    </div>
-                </div>
-                <div>
-                    <MudText Typo="Typo.subtitle1">Approved</MudText>
-                    <div class="d-flex flex-row gap-2 align-items-center">
-                        @foreach (var progressBar in progressBarsApproved)
-                        {
-                            <MudProgressLinear style="width: 100px;" Striped="true" Color="@progressBar.Color" Rounded="true" Size="Size.Large" Value="@progressBar.Value"/>
-                        }
-                        <MudText Typo="Typo.subtitle1">@(percent3.ToString("N2")+"%")</MudText>
-                    </div>
-                </div>
-            </MudPaper>
-        </MudItem>
         <MudItem xs="12">
             <MudTable Style=" overflow: auto;" Height="auto" Items="@listAccounts" Hover="true" Filter="new Func<UserAccountModel,bool>(FilterFunc)" FixedFooter FixedHeader>
                 <ToolBarContent>
@@ -147,7 +107,7 @@ else
     private async Task GetList()
     {
         listAccounts = await _accountService.GetUsers();
-        listAccounts = listAccounts.Where( e => e.accountType == "Driver").ToList();
+        listAccounts = listAccounts.Where( e => e.accountType == "Commuter").ToList();
         foreach(var e in listAccounts) {
             var userRecord = await FirebaseAuth.DefaultInstance.GetUserAsync(e.uid);
             e.creationDate =  userRecord.UserMetaData.CreationTimestamp;

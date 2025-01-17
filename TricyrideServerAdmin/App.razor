@@ -13,10 +13,10 @@
                                 <div class="page d-flex justify-content-center align-items-center py-4" style="height: 90vh;width: 100%;">
                                     <MudPaper Class="d-flex flex-column pa-4 pt-5 gap-3" Elevation="3" Width="100%" Height="auto">
                                         <MudText Class="mb-6" Typo="Typo.h6">Welcome, Sign in to continue.</MudText>
-                                        <MudTextField @bind-Value="email" Label="Email" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                        <MudTextField @bind-Value="email" Label="email" Variant="Variant.Outlined" Margin="Margin.Dense"
                                         Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.LockPerson"/>
-                                        <MudTextField @bind-Value="password" InputType="PasswordInput" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" 
-                                        Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password"/>
+                                        <MudTextField @bind-Value="password" InputType="PasswordInput" Label="password" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                        Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show password"/>
                                         <MudButton Class="mb-5" Variant="Variant.Filled" OnClick="Login" Color="Color.Primary">SIGN IN</MudButton>
                                     </MudPaper>
                                 </div>

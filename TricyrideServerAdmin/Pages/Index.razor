@@ -160,8 +160,8 @@ else
         listAccounts = await _accountService.GetUsers();
         listcommutes = await _commuteService.GetCommutes();
         foreach(var comm in listcommutes) {
-            comm.DriverAccount = listAccounts.Where( e => e.Uid == comm.DriverUid).FirstOrDefault();
-            comm.PassengerAccount = listAccounts.Where( e => e.Uid == comm.PassengerUid).FirstOrDefault();
+            comm.DriverAccount = listAccounts.Where( e => e.uid == comm.DriverUid).FirstOrDefault();
+            comm.PassengerAccount = listAccounts.Where( e => e.uid == comm.PassengerUid).FirstOrDefault();
         }
         listcommutes = listcommutes
             .OrderByDescending(c => c.CommuteDate.ToDateTime())
@@ -170,8 +170,8 @@ else
         cancelation = listcommutes.Where( e => e.CommuteStatus == Enums.Enum.CommuteStatus.Cancelled).Count() * 3;
         todayTotalBooking = listcommutes.Where( e => e.CommuteDate.ToDateTime()?.Date == DateTime.Now.Date).Count();
         totalBooking = listcommutes.Count();
-        totalDrivers = listAccounts.Where( e => e.AccountType == Enums.Enum.AccountType.Driver).Count();
-        TotalCommuters = listAccounts.Where( e => e.AccountType == Enums.Enum.AccountType.Commuter).Count();
+        totalDrivers = listAccounts.Where( e => e.accountType == "Driver").Count();
+        TotalCommuters = listAccounts.Where( e => e.accountType == "Commuter").Count();
     }
     
     private void LineChartSetUp()

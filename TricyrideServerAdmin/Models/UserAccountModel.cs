@@ -4,24 +4,24 @@ namespace TricyrideServerAdmin.Models
 {
     public class UserAccountModel
     {
-        public string Uid { get; set; }
-        public string Firstname { get; set; }
-        public string Lastname { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string ProfilePicture { get; set; }
-        public AccountType AccountType { get; set; }
-        public string DateOfBirth { get; set; }
-        public string Address { get; set; }
+        public string uid { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
+        public string email { get; set; }
+        public string phoneNumber { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
+        public string profilePicture { get; set; }
+        public string accountType { get; set; }
+        public string dateOfBirth { get; set; }
+        public string address { get; set; }
         public bool? IsApproved { get; set; }
-        public DateTime? CreationDate { get; set; }
+        public DateTime? creationDate { get; set; }
 
         // Method to get the full name
         public string GetFullName()
         {
-            return $"{Firstname} {Lastname}";
+            return $"{firstname} {lastname}";
         }
     }
 }

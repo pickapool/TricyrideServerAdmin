@@ -2,17 +2,17 @@
     <DialogContent>
         <MudGrid Spacing="3" Class="pa-2">
             <MudItem xs="12" xl=6 md="4" sm="4">
-                <MudImage Elevation="2" Style="width: 100%;" ObjectFit="ObjectFit.Fill" Src="@(UserAccount.ProfilePicture == null || String.IsNullOrEmpty(UserAccount.ProfilePicture) ? "images/blank_profile.png" : UserAccount.ProfilePicture)"></MudImage>
+                <MudImage Elevation="2" Style="width: 100%;" ObjectFit="ObjectFit.Fill" Src="@(UserAccount.profilePicture == null || String.IsNullOrEmpty(UserAccount.profilePicture) ? "images/blank_profile.png" : UserAccount.profilePicture)"></MudImage>
             </MudItem>
             <MudItem xs="12" xl=6 md="8" sm="8">
                 <MudPaper Elevation="0" Class="d-flex flex-column gap-1">
-                    <MudText Typo="Typo.caption"><b>UID</b> : @UserAccount.Uid</MudText>
+                    <MudText Typo="Typo.caption"><b>uid</b> : @UserAccount.uid</MudText>
                     <MudText Typo="Typo.caption"><b>Fullname</b> : @UserAccount.GetFullName()</MudText>
-                    <MudText Typo="Typo.caption"><b>Address</b>  : @UserAccount.Address</MudText>
-                    <MudText Typo="Typo.caption"><b>Date of Birth</b> : @UserAccount.DateOfBirth</MudText>
-                    <MudText Typo="Typo.caption"><b>Email</b> : @UserAccount.Email</MudText>
-                    <MudText Typo="Typo.caption"><b>Contact #</b> : @UserAccount.PhoneNumber</MudText>
-                    <MudText Typo="Typo.caption"><b>Username</b> : @UserAccount.Username</MudText>
+                    <MudText Typo="Typo.caption"><b>address</b>  : @UserAccount.address</MudText>
+                    <MudText Typo="Typo.caption"><b>Date of Birth</b> : @UserAccount.dateOfBirth</MudText>
+                    <MudText Typo="Typo.caption"><b>email</b> : @UserAccount.email</MudText>
+                    <MudText Typo="Typo.caption"><b>Contact #</b> : @UserAccount.phoneNumber</MudText>
+                    <MudText Typo="Typo.caption"><b>username</b> : @UserAccount.username</MudText>
                     <MudText Typo="Typo.caption"><b>Status :</b></MudText>
                     <div style="width: 100px;">
                         @if(UserAccount.IsApproved == null)

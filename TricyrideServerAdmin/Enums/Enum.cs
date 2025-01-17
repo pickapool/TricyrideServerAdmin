@@ -2,7 +2,7 @@
 {
     public class Enum
     {
-        public enum AccountType
+        public enum accountType
         {
             Driver,
             Commuter

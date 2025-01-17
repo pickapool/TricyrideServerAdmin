@@ -15,7 +15,7 @@ else
                 Class="mt-0" Immediate></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh Class="text-center"><MudTableSortLabel SortLabel="UID" T="CommuteModel">UID</MudTableSortLabel></MudTh>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="uid" T="CommuteModel">uid</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="Driver" T="CommuteModel">Driver</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="Commuter" T="CommuteModel">Commuter</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="Date" T="CommuteModel">Date</MudTableSortLabel></MudTh>
@@ -23,15 +23,15 @@ else
             <MudTh Class="text-center"><MudTableSortLabel SortLabel="Status" T="CommuteModel">Status</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="UID">@context.Key</MudTd>
+            <MudTd DataLabel="uid">@context.Key</MudTd>
             <MudTd DataLabel="Driver">
                 <div class="d-flex flex-row align-items-center gap-2">
                     <MudAvatar>
-                        <MudImage Src="@(context.DriverAccount == null || String.IsNullOrEmpty(context.DriverAccount?.ProfilePicture) ? "images/blank_profile.png" : context.DriverAccount?.ProfilePicture)"></MudImage>
+                        <MudImage Src="@(context.DriverAccount == null || String.IsNullOrEmpty(context.DriverAccount?.profilePicture) ? "images/blank_profile.png" : context.DriverAccount?.profilePicture)"></MudImage>
                     </MudAvatar>
                     <div class="d-flex flex-column">
                         <MudText Typo="Typo.button">@(context.DriverAccount == null ? "Not Occupied" : context.DriverAccount?.GetFullName())</MudText>
-                        <MudText Typo="Typo.caption">@(context.DriverAccount == null ? "" : context.DriverAccount?.Email)</MudText>
+                        <MudText Typo="Typo.caption">@(context.DriverAccount == null ? "" : context.DriverAccount?.email)</MudText>
                     </div>
                     
                 </div>
@@ -39,11 +39,11 @@ else
             <MudTd DataLabel="Commuter">
                 <div class="d-flex flex-row align-items-center gap-2">
                     <MudAvatar>
-                        <MudImage Src="@(context.PassengerAccount == null || String.IsNullOrEmpty(context.PassengerAccount?.ProfilePicture) ? "images/blank_profile.png" : context.PassengerAccount?.ProfilePicture)"></MudImage>
+                        <MudImage Src="@(context.PassengerAccount == null || String.IsNullOrEmpty(context.PassengerAccount?.profilePicture) ? "images/blank_profile.png" : context.PassengerAccount?.profilePicture)"></MudImage>
                     </MudAvatar>
                     <div class="d-flex flex-column">
                         <MudText Typo="Typo.button">@(context.PassengerAccount == null ? "Not Occupied" : context.PassengerAccount?.GetFullName())</MudText>
-                        <MudText Typo="Typo.caption">@(context.PassengerAccount == null ? "" : context.PassengerAccount?.Email)</MudText>
+                        <MudText Typo="Typo.caption">@(context.PassengerAccount == null ? "" : context.PassengerAccount?.email)</MudText>
                     </div>
                 </div>
             </MudTd>
@@ -90,8 +90,8 @@ else
         listAccounts = await _accountService.GetUsers();
         listcommutes = await _commuteService.GetCommutes();
         foreach(var comm in listcommutes) {
-            comm.DriverAccount = listAccounts.Where( e => e.Uid == comm.DriverUid).FirstOrDefault();
-            comm.PassengerAccount = listAccounts.Where( e => e.Uid == comm.PassengerUid).FirstOrDefault();
+            comm.DriverAccount = listAccounts.Where( e => e.uid == comm.DriverUid).FirstOrDefault();
+            comm.PassengerAccount = listAccounts.Where( e => e.uid == comm.PassengerUid).FirstOrDefault();
         }
         listcommutes = listcommutes
             .OrderByDescending(c => c.CommuteDate.ToDateTime())

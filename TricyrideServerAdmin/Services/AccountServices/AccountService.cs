@@ -39,17 +39,17 @@ namespace TricyrideServerAdmin.Services.AccountServices
 
             return data.Select(d => new UserAccountModel
             {
-                Uid = d.Object.Uid,
-                Firstname = d.Object.Firstname,
-                Lastname = d.Object.Lastname,
-                Email = d.Object.Email,
-                PhoneNumber = d.Object.PhoneNumber,
-                Username = d.Object.Username,
-                Password = d.Object.Password,
-                ProfilePicture = d.Object.ProfilePicture,
-                AccountType = d.Object.AccountType,
-                DateOfBirth = d.Object.DateOfBirth,
-                Address = d.Object.Address,
+                uid = d.Object.uid,
+                firstname = d.Object.firstname,
+                lastname = d.Object.lastname,
+                email = d.Object.email,
+                phoneNumber = d.Object.phoneNumber,
+                username = d.Object.username,
+                password = d.Object.password,
+                profilePicture = d.Object.profilePicture,
+                accountType = d.Object.accountType,
+                dateOfBirth = d.Object.dateOfBirth,
+                address = d.Object.address,
                 IsApproved = d.Object.IsApproved
             }).ToList();
         }
@@ -57,8 +57,8 @@ namespace TricyrideServerAdmin.Services.AccountServices
         {
             var json = JsonConvert.SerializeObject(user);
             await _firebaseClient
-                .Child($"Accounts/{user.Uid}/")
-                .PatchAsync(json);
+                .Child($"Accounts/{user.uid}/").PutAsync
+                (json);
         }
     }
 }
