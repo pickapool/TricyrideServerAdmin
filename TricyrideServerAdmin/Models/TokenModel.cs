@@ -4,5 +4,6 @@ namespace TricyrideServerAdmin.Models
     {
         public string Token { get; set; }
         public DateTime ExpiresAt { get; set; }
+        public string LocalId { get; set; }
     }
 }

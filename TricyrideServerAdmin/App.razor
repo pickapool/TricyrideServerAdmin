@@ -73,6 +73,7 @@
                     TokenModel tokenModel = new();
                     tokenModel.Token = item.Result.IdToken;
                     tokenModel.ExpiresAt = expirationTime;
+                    tokenModel.LocalId = item.Result.LocalId;
                     await _localStorage.SetItemAsync("token", tokenModel);
                     ((CustomAuthStateProvider)_authenticationStateProvider).NotifyUserAuthentication(item.Result.IdToken);
                 }

@@ -2,13 +2,12 @@
 using Blazored.LocalStorage;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
 using TricyrideServerAdmin.Common;
 using TricyrideServerAdmin.Services.AccountServices;
 using TricyrideServerAdmin.Services.CommuteServices;
+using TricyrideServerAdmin.Services.DriverServices;
 using TricyrideServerAdmin.Services.ReportServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +23,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICommuteService, CommuteService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IDriverService, DriverService>();
 
 var app = builder.Build();
 

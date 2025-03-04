@@ -28,12 +28,17 @@ else
                 <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #7da0fa;">
                     <MudText Class="c-w" Typo="Typo.body2">Today's Bookings</MudText>
                     <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">@todayTotalBooking.ToString("N0")</MudText>
-                    <MudText Class="c-w" Typo="Typo.body2">@(((todayTotalBooking/totalBooking)*100).ToString("N2")) %</MudText>
+                    @if(totalBooking > 0) {
+                        <MudText Class="c-w" Typo="Typo.body2">@(((todayTotalBooking/totalBooking)*100).ToString("N2")) %</MudText>
+                    }
                 </MudPaper>
                 <MudPaper Class="c-border d-flex flex-column pa-4 pb-15" Elevation="1" Height="200px" Width="50%" style="background-color: #4747a1;">
                     <MudText Class="c-w" Typo="Typo.body2">Total Bookings</MudText>
                     <MudText Class="d-flex flex-1 align-items-center c-w" Typo="Typo.h3">@totalBooking.ToString("N0")</MudText>
-                    <MudText Class="c-w" Typo="Typo.body2">@((((totalBooking - todayTotalBooking)/totalBooking)*100).ToString("N2")) %</MudText>
+                    @if (totalBooking > 0)
+                    {
+                        <MudText Class="c-w" Typo="Typo.body2">@((((totalBooking - todayTotalBooking)/totalBooking)*100).ToString("N2")) %</MudText>
+                    }
                 </MudPaper>
             </div>
             <div class="d-flex flex-row reduce-margin-t">

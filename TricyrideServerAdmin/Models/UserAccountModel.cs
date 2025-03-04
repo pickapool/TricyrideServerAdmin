@@ -1,4 +1,5 @@
-﻿using static TricyrideServerAdmin.Enums.Enum;
+﻿using Newtonsoft.Json;
+using static TricyrideServerAdmin.Enums.Enum;
 
 namespace TricyrideServerAdmin.Models
 {
@@ -23,5 +24,11 @@ namespace TricyrideServerAdmin.Models
         {
             return $"{firstname} {lastname}";
         }
+        [JsonIgnore]
+        public bool isopen {  get; set; }
+        [JsonIgnore]
+        public List<FileModel> ListFiles { get; set; } = new();
+        [JsonIgnore]
+        public double AverageRating { get; set; }
     }
 }

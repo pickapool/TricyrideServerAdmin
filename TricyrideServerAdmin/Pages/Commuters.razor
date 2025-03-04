@@ -1,5 +1,5 @@
 @page "/commuters"
-<PageTitle>Tricyride | Drivers</PageTitle>
+<PageTitle>Tricyride | Commuters</PageTitle>
 @if (IsLoading)
 {
     <MudProgressCircular Class="global-loader" Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true"></MudProgressCircular>
@@ -10,23 +10,23 @@ else
         <MudItem xs="12">
             <MudTable Style=" overflow: auto;" Height="auto" Items="@listAccounts" Hover="true" Filter="new Func<UserAccountModel,bool>(FilterFunc)" FixedFooter FixedHeader>
                 <ToolBarContent>
-                    <MudText Typo="Typo.h6">Drivers List</MudText>
+                    <MudText Typo="Typo.h6">Commuters List</MudText>
                     <MudSpacer />
                     <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" 
                         Class="mt-0" Immediate></MudTextField>
                 </ToolBarContent>
                 <HeaderContent>
                     <MudTh Class="text-center">uid</MudTh>
-                    <MudTh>Driver</MudTh>
+                    <MudTh>Commuter</MudTh>
                     <MudTh>username</MudTh>
                     <MudTh Class="text-center">address</MudTh>
                     <MudTh Class="text-center">Contact #</MudTh>
-                    <MudTh Class="text-center">Status</MudTh>
-                    <MudTh Class="text-center">Action</MudTh>
+                    @* <MudTh Class="text-center">Status</MudTh> *@
+                    @* <MudTh Class="text-center">Action</MudTh> *@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="uid">@context.uid</MudTd>
-                    <MudTd DataLabel="Driver">
+                    <MudTd DataLabel="Commuter">
                         <div class="d-flex flex-row align-items-center gap-2">
                             <MudAvatar>
                                 <MudImage Src="@(context.profilePicture == null || String.IsNullOrEmpty(context.profilePicture) ? "images/blank_profile.png" : context.profilePicture)"></MudImage>
@@ -41,7 +41,7 @@ else
                     <MudTd DataLabel="Date">@context.username</MudTd>
                     <MudTd DataLabel="Fare">@context.address</MudTd>
                     <MudTd Class="text-center" DataLabel="Fare">@context.phoneNumber</MudTd>
-                    <MudTd Class="text-center" DataLabel="Status">
+                    @* <MudTd Class="text-center" DataLabel="Status">
                         @if(context.IsApproved == null)
                         {
                             <MudChip T="string" Color="Color.Warning" Size="Size.Small">Pending</MudChip>
@@ -50,8 +50,8 @@ else
                         } else {
                             <MudChip T="string" Color="Color.Error" Size="Size.Small">Rejected</MudChip>
                         }
-                    </MudTd>
-                    <MudTd Class='text-center pa-2' DataLabel="Action">
+                    </MudTd> *@
+                    @* <MudTd Class='text-center pa-2' DataLabel="Action">
                         <MudMenu Icon='@Icons.Material.Filled.MoreVert' AnchorOrigin='Origin.TopLeft'
                             TransformOrigin='Origin.TopRight' Dense='true' Size='Size.Small'>
                                 <MudMenuItem OnClick="()=> ViewUserDialog(context)">
@@ -73,7 +73,7 @@ else
                                     </div>
                                 </MudMenuItem>
                         </MudMenu>
-                    </MudTd>
+                    </MudTd> *@
                 </RowTemplate>
                 <NoRecordsContent>
                     <MudText>No matching records found</MudText>
@@ -92,14 +92,9 @@ else
     List<UserAccountModel> listAccounts = new();
     private string searchString = "";
     private bool IsLoading = true;
-    private LineConfig lineChart;
-    float percent1 = 0.0f, percent2 = 0.0f, percent3 = 0.0f;
-    private List<ProgressBarModel> progressBarsPending;
-    private List<ProgressBarModel> progressBarsApproved;
-    private List<ProgressBarModel> progressBarsRejected;
     protected override async Task OnInitializedAsync()
     {
-        MainLayout.Title = "Drivers";
+        MainLayout.Title = "Commuters";
         await GetList();
         IsLoading = false;
         StateHasChanged();
@@ -112,7 +107,6 @@ else
             var userRecord = await FirebaseAuth.DefaultInstance.GetUserAsync(e.uid);
             e.creationDate =  userRecord.UserMetaData.CreationTimestamp;
         }
-        SetupGraph();
     }
     private bool FilterFunc(UserAccountModel element)
     {
@@ -146,7 +140,7 @@ else
         {
             try {
                 user.IsApproved = action == Enums.Enum.Action.Approve ? true : false;
-                user.accountType = "Driver";
+                user.accountType = "Commuter";
                 await _accountService.UpdateUser(user);
                 Extensions.ShowSnackbar($"Account was successfully {(action == Enums.Enum.Action.Approve ? "Approved":"Rejected")}.", Variant.Filled, _snackBar, Severity.Success);
             } catch(Exception ee) {
@@ -170,143 +164,4 @@ else
             
         }
     }
-    private void SetupGraph()
-    {
-        lineChart = new LineConfig
-        {
-            Options = new LineOptions
-            {
-                Responsive = true,
-                Title = new OptionsTitle
-                {
-                    Display = true,
-                    Text = "Drivers Graph"
-                },
-                Scales = new Scales
-                {
-                    YAxes = new List<CartesianAxis>
-                    {
-                        new LinearCartesianAxis
-                        {
-                            ScaleLabel = new ScaleLabel
-                            {
-                                LabelString = "Count",
-                                Display = true
-                            }, 
-                            Ticks = new LinearCartesianTicks {
-                                Max = listAccounts.Count()/2
-                            }
-                        }
-                    }
-                }
-            }
-        };
-
-        List<int> listPendings = new();
-        List<int> listRejected = new();
-        List<int> listApproved = new();
-        List<int> listDrivers = new();
-        for(int  i = 1 ; i <= 12; i++)
-        {
-            int drivers = listAccounts.Where( e => e.creationDate?.Year == DateTime.Now.Year && e.creationDate?.Month == i).Count();
-            int rejecteds = listAccounts.Where( e => e.creationDate?.Year == DateTime.Now.Year && e.creationDate?.Month == i && e.IsApproved != null && e.IsApproved == false).Count();
-            int pendings = listAccounts.Where( e => e.creationDate?.Year == DateTime.Now.Year && e.creationDate?.Month == i && e.IsApproved == null).Count();
-            int approved = listAccounts.Where( e => e.creationDate?.Year == DateTime.Now.Year && e.creationDate?.Month == i && e.IsApproved != null && e.IsApproved == true).Count();
-
-            listDrivers.Add(drivers);
-            listPendings.Add(pendings);
-            listRejected.Add(rejecteds);
-            listApproved.Add(approved);
-        }
-        
-
-        foreach (string months in new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" })
-        {
-            lineChart.Data.Labels.Add(months);
-        }
-
-        LineDataset<int> pendingDataset = new LineDataset<int>(listPendings.ToArray())
-        {
-            Label = "Pending",
-            BackgroundColor = "rgba(0, 0, 0, 0)",
-            BorderColor = ColorUtil.ColorHexString(255, 206, 86),
-            BorderWidth = 3,
-        };
-        LineDataset<int> approvedDataset = new LineDataset<int>(listApproved.ToArray())
-        {
-            Label = "Approved",
-            BackgroundColor = "rgba(0, 0, 0, 0)",
-            BorderColor = ColorUtil.ColorHexString(75, 192, 192),
-            BorderWidth = 3,
-        };
-        LineDataset<int> rejectedDataset = new LineDataset<int>(listRejected.ToArray())
-        {
-            Label = "Rejected",
-            BackgroundColor = "rgba(0, 0, 0, 0)",
-            BorderColor = ColorUtil.ColorHexString(255, 99, 132),
-            BorderWidth = 3,
-        };
-        BarDataset<int> barDataset = new BarDataset<int>(listDrivers.ToArray())
-        {
-            Label = "Drivers",
-            BackgroundColor = "rgba(54, 162, 235, 1)",
-            BorderColor = "rgba(54, 162, 235, 1)",
-            BorderWidth = 4,
-        };
-
-        lineChart.Data.Datasets.Add(pendingDataset);
-        lineChart.Data.Datasets.Add(approvedDataset);
-        lineChart.Data.Datasets.Add(rejectedDataset);
-        
-        lineChart.Data.Datasets.Add(barDataset);
-
-        //progressbar
-        progressBarsPending = new List<ProgressBarModel>();
-        progressBarsApproved = new List<ProgressBarModel>();
-        progressBarsRejected = new List<ProgressBarModel>();
-
-        float totalCount = listAccounts.Count();
-        float countPendings = listAccounts.Count(e => e.creationDate?.Year == DateTime.Now.Year && e.IsApproved == null);
-        float countRejected = listAccounts.Count(e => e.creationDate?.Year == DateTime.Now.Year && e.IsApproved != null && e.IsApproved == false);
-        float countApproved = listAccounts.Count(e => e.creationDate?.Year == DateTime.Now.Year && e.IsApproved != null && e.IsApproved == true);
-
-        float percentagePerBar = 100 / 5; // Assuming 5 progress bars
-        CalculateProgressBars(countPendings, progressBarsPending, percentagePerBar, totalCount, Color.Warning);
-        CalculateProgressBars(countApproved, progressBarsApproved, percentagePerBar, totalCount, Color.Success);
-        CalculateProgressBars(countRejected, progressBarsRejected, percentagePerBar, totalCount, Color.Error);
-
-        percent1 = (totalCount > 0) ? (countPendings / totalCount) * 100 : 0;
-        percent2 = (totalCount > 0) ? (countRejected / totalCount) * 100 : 0;
-        percent3 = (totalCount > 0) ? (countApproved / totalCount) * 100 : 0;
-        
-    }
-    void CalculateProgressBars(float count, List<ProgressBarModel> progressBars, float percentagePerBar,float totalCount, Color color)
-    {
-        float percentage = (count / totalCount) * 100;
-        
-        for (int i = 0; i < 5; i++)
-        {
-            int value;
-            if (percentage >= (i + 1) * percentagePerBar)
-            {
-                value = 100; // Full bar
-            }
-            else if (percentage >= i * percentagePerBar)
-            {
-                value = (int)((percentage - (i * percentagePerBar)) / percentagePerBar * 100);
-            }
-            else
-            {
-                value = 0; // Empty bar
-            }
-
-            progressBars.Add(new ProgressBarModel
-            {
-                Value = value,
-                Color = color
-            });
-        }
-        
-    }
-
 }

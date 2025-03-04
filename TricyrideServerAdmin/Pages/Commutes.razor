@@ -1,0 +1,110 @@
+@page "/commutes"
+
+<PageTitle>Tricyride | Commutes</PageTitle>
+@if (IsLoading)
+{
+    <MudProgressCircular Class="global-loader" Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true"></MudProgressCircular>
+}
+else
+{
+    <MudGrid Spacing="2" Class="pa-3">
+        <MudItem xs="12">
+            <MudTable Style=" overflow: auto;" Height="auto" Items="@listCommutes" Hover="true" Filter="new Func<CommuteModel,bool>(FilterFunc)" FixedFooter FixedHeader>
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Drivers List</MudText>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" 
+                    Class="mt-0" Immediate></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh Class="text-center">uid</MudTh>
+                    <MudTh>Driver</MudTh>
+                    <MudTh>username</MudTh>
+                    <MudTh Class="text-center">address</MudTh>
+                    <MudTh Class="text-center">Contact #</MudTh>
+                    <MudTh Class="text-center">Rating</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="uid">@context.DriverUid</MudTd>
+                    <MudTd DataLabel="Driver">
+                        <div class="d-flex flex-row align-items-center gap-2">
+                            <MudAvatar>
+                                <MudImage Src="@(context.DriverAccount?.profilePicture == null || String.IsNullOrEmpty(context.DriverAccount.profilePicture) ? "images/blank_profile.png" : context.DriverAccount?.profilePicture)"></MudImage>
+                            </MudAvatar>
+                            <div class="d-flex flex-column">
+                                <MudText Typo="Typo.button">@(context.DriverAccount?.profilePicture == null ? "Not Occupied" : context.DriverAccount.GetFullName())</MudText>
+                                <MudText Typo="Typo.caption">@(context.DriverAccount?.profilePicture == null ? "" : context.DriverAccount.email)</MudText>
+                            </div>
+
+                        </div>
+                    </MudTd>
+                    <MudTd DataLabel="Date">@context.DriverAccount?.username</MudTd>
+                    <MudTd DataLabel="Fare">@context.DriverAccount?.address</MudTd>
+                    <MudTd Class="text-center" DataLabel="Fare">@context.DriverAccount?.phoneNumber</MudTd>
+                    <MudTd Class="text-center" DataLabel="Raing">
+                        <div class="d-flex flex-row align-items-center justify-content-center">
+                            <span>@context.Rating.ToString("N2")</span>
+                            @if(context.Rating <= 2) {
+                                <MudIcon Icon="@Icons.Material.Filled.StarOutline" Size="Size.Small" Color="Color.Error"></MudIcon>
+                            } else {
+                                <MudIcon Icon="@Icons.Material.Filled.Star" Size="Size.Small" Color="Color.Info"></MudIcon>
+                            }
+                        </div>
+                    </MudTd>  
+                </RowTemplate>
+                <NoRecordsContent>
+                    <MudText>No matching records found</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        </MudItem>
+    </MudGrid>
+}
+@code {
+    List<UserAccountModel> listAccounts = new();
+    List<CommuteModel> listCommutes = new();
+    private string searchString = "";
+    private bool IsLoading = true;
+    protected override async Task OnInitializedAsync()
+    {
+        MainLayout.Title = "Ratings";
+        await GetList();
+        IsLoading = false;
+        StateHasChanged();
+    }
+    private async Task GetList()
+    {
+        listCommutes = await _commuteService.GetCommutes();
+        listAccounts = await _accountService.GetUsers();
+        listAccounts = listAccounts.Where( e => e.accountType == "Driver").ToList();
+        foreach(var e in listAccounts) {
+            var userRecord = await FirebaseAuth.DefaultInstance.GetUserAsync(e.uid);
+            e.creationDate =  userRecord.UserMetaData.CreationTimestamp;
+        }
+        foreach(var e in listCommutes) {
+            e.DriverAccount = listAccounts.FirstOrDefault( x => x.uid == e.DriverUid);
+        }
+    }
+    private bool FilterFunc(CommuteModel element)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if(element.DriverAccount != null)
+        {
+            if (element.DriverAccount.username.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.DriverAccount.address.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.DriverAccount.email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.DriverAccount.GetFullName().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        return false;
+    }
+}

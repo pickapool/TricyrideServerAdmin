@@ -1,4 +1,5 @@
 @page "/drivers"
+
 <PageTitle>Tricyride | Drivers</PageTitle>
 @if (IsLoading)
 {
@@ -53,7 +54,7 @@ else
                     <MudText Typo="Typo.h6">Drivers List</MudText>
                     <MudSpacer />
                     <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" 
-                        Class="mt-0" Immediate></MudTextField>
+                    Class="mt-0" Immediate></MudTextField>
                 </ToolBarContent>
                 <HeaderContent>
                     <MudTh Class="text-center">uid</MudTh>
@@ -62,6 +63,7 @@ else
                     <MudTh Class="text-center">address</MudTh>
                     <MudTh Class="text-center">Contact #</MudTh>
                     <MudTh Class="text-center">Status</MudTh>
+                    <MudTh Class="text-center">Average Rating</MudTh>
                     <MudTh Class="text-center">Action</MudTh>
                 </HeaderContent>
                 <RowTemplate>
@@ -75,7 +77,7 @@ else
                                 <MudText Typo="Typo.button">@(context.profilePicture == null ? "Not Occupied" : context.GetFullName())</MudText>
                                 <MudText Typo="Typo.caption">@(context.profilePicture == null ? "" : context.email)</MudText>
                             </div>
-                            
+
                         </div>
                     </MudTd>
                     <MudTd DataLabel="Date">@context.username</MudTd>
@@ -91,28 +93,71 @@ else
                             <MudChip T="string" Color="Color.Error" Size="Size.Small">Rejected</MudChip>
                         }
                     </MudTd>
+                    <MudTd Class='text-center pa-2' DataLabel="Summary">
+                            <div class="d-flex flex-row align-items-center justify-content-center">
+                                <span>@context.AverageRating.ToString("N2")</span>
+                                <MudIcon Icon="@Icons.Material.Filled.StarOutline" Size="Size.Small"></MudIcon>
+                            </div>
+                            
+                        </MudTd>
                     <MudTd Class='text-center pa-2' DataLabel="Action">
                         <MudMenu Icon='@Icons.Material.Filled.MoreVert' AnchorOrigin='Origin.TopLeft'
-                            TransformOrigin='Origin.TopRight' Dense='true' Size='Size.Small'>
-                                <MudMenuItem OnClick="()=> ViewUserDialog(context)">
-                                    <div class='d-flex align-center gap-2 '>
-                                        <MudIcon Icon='@Icons.Material.Filled.Preview' Size='Size.Small' />
-                                        <MudText Typo='Typo.body2'>View</MudText>
-                                    </div>
-                                </MudMenuItem>
-                                <MudMenuItem OnClick="()=> OpenConfirmDialog(Enums.Enum.Action.Approve, context)">
-                                    <div class='d-flex align-center gap-2 '>
-                                        <MudIcon Icon='@Icons.Material.Filled.Check' Size='Size.Small' />
-                                        <MudText Typo='Typo.body2'>Approve</MudText>
-                                    </div>
-                                </MudMenuItem>
-                                <MudMenuItem OnClick="()=> OpenConfirmDialog(Enums.Enum.Action.Reject, context)">
-                                    <div class='d-flex align-center gap-2 '>
-                                        <MudIcon Icon='@Icons.Material.Filled.Cancel' Size='Size.Small' />
-                                        <MudText Typo='Typo.body2'>Reject</MudText>
-                                    </div>
-                                </MudMenuItem>
+                        TransformOrigin='Origin.TopRight' Dense='true' Size='Size.Small'>
+                            <MudMenuItem OnClick="()=> ViewUserDialog(context)">
+                                <div class='d-flex align-center gap-2 '>
+                                    <MudIcon Icon='@Icons.Material.Filled.Preview' Size='Size.Small' />
+                                    <MudText Typo='Typo.body2'>View</MudText>
+                                </div>
+                            </MudMenuItem>
+                            <MudMenuItem OnClick="()=> OpenConfirmDialog(Enums.Enum.Action.Approve, context)">
+                                <div class='d-flex align-center gap-2 '>
+                                    <MudIcon Icon='@Icons.Material.Filled.Check' Size='Size.Small' />
+                                    <MudText Typo='Typo.body2'>Approve</MudText>
+                                </div>
+                            </MudMenuItem>
+                            <MudMenuItem OnClick="()=> OpenConfirmDialog(Enums.Enum.Action.Reject, context)">
+                                <div class='d-flex align-center gap-2 '>
+                                    <MudIcon Icon='@Icons.Material.Filled.Cancel' Size='Size.Small' />
+                                    <MudText Typo='Typo.body2'>Reject</MudText>
+                                </div>
+                            </MudMenuItem>
+                            <MudMenuItem OnClick="()=> OpenFile(context)">
+                                <div class='d-flex align-center gap-2 '>
+                                    <MudIcon Icon='@Icons.Material.Filled.AttachFile' Size='Size.Small' />
+                                    <MudText Typo='Typo.body2'>Files</MudText>
+                                </div>
+                            </MudMenuItem>
                         </MudMenu>
+                        <MudPopover Open="@context.isopen" Fixed="true" Class="px-4 pt-4 overflow-auto" style="width: 400px; max-height: 600px;">
+                            <div class="d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <MudText Typo="Typo.button">Files</MudText>
+                                    <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="(IReadOnlyList<IBrowserFile> e)=> UploadFiles(e , context)">
+                                        <ActivatorContent>
+                                            <MudButton StartIcon="@Icons.Material.Filled.CloudUpload" Variant="Variant.Text" Color="Color.Primary">Browse</MudButton>
+                                        </ActivatorContent>
+                                    </MudFileUpload>
+                                </div>
+                                <MudDivider></MudDivider>
+                                    <div class="d-flex flex-column py-2">
+                                        @if(context.ListFiles.Count > 0) {
+                                            foreach(var item in context.ListFiles) {
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <MudText Typo="Typo.caption">@item.fileName</MudText>
+                                                        <div>
+                                                            <MudIconButton OnClick="()=> DownloadFile(item)" Icon="@Icons.Material.Filled.Download" Color="Color.Primary" Size="Size.Small"/>
+                                                            <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Primary" Size="Size.Small"/>
+                                                        </div>
+                                                    </div>
+                                            }
+                                       } else {
+                                            <MudText Typo="Typo.subtitle1">No Files</MudText>
+                                       }
+                                    </div>
+                                <MudDivider></MudDivider>
+                                <MudButton OnClick="()=> context.isopen = !context.isopen" Class="ml-auto mr-n3 mb-1" Color="Color.Error">Close</MudButton>
+                            </div>
+                        </MudPopover>
                     </MudTd>
                 </RowTemplate>
                 <NoRecordsContent>
@@ -137,6 +182,8 @@ else
     private List<ProgressBarModel> progressBarsPending;
     private List<ProgressBarModel> progressBarsApproved;
     private List<ProgressBarModel> progressBarsRejected;
+    private IBrowserFile? selectedFile;
+    List<CommuteModel> listCommutes = new();
     protected override async Task OnInitializedAsync()
     {
         MainLayout.Title = "Drivers";
@@ -144,13 +191,44 @@ else
         IsLoading = false;
         StateHasChanged();
     }
+    private async Task UploadFiles(IReadOnlyList<IBrowserFile> files, UserAccountModel account)
+    {
+        Console.WriteLine(files.Count());
+        foreach (var file in files)
+        {
+            Task<FileModel> fileModel = _driverService.UploadFiles(file, account.uid);
+            await fileModel;
+            if(fileModel.Status == TaskStatus.RanToCompletion)
+            {
+                account.ListFiles.Add(fileModel.Result);
+            }
+        }
+    }
+    private async Task DownloadFile(FileModel file)
+    {
+        await _driverService.DownloadFileAsync(file, _localStorage);
+        Extensions.ShowSnackbar("File has been downloaded, please check DOWNLOAD folder", Variant.Filled, _snackBar, Severity.Success);
+    }
     private async Task GetList()
     {
+        listCommutes = await _commuteService.GetCommutes();
         listAccounts = await _accountService.GetUsers();
         listAccounts = listAccounts.Where( e => e.accountType == "Driver").ToList();
         foreach(var e in listAccounts) {
             var userRecord = await FirebaseAuth.DefaultInstance.GetUserAsync(e.uid);
             e.creationDate =  userRecord.UserMetaData.CreationTimestamp;
+            var driverCommutes = listCommutes.Where(c => c.DriverUid == e.uid).ToList();
+            if (driverCommutes.Any()) {
+                e.AverageRating = driverCommutes.Where( e => e.Rating > 0).Average(c => c.Rating);
+                if(e.AverageRating < 2 && driverCommutes.Count() >= 50) {
+                    e.IsApproved = false;
+                    e.accountType = "Driver";
+                    await _accountService.UpdateUser(e);
+                    StateHasChanged();
+                }
+            } else {
+                e.AverageRating = 0;  // Default to 0 if no completed commutes
+            }
         }
         SetupGraph();
     }
@@ -170,7 +248,7 @@ else
     }
     private async Task OpenConfirmDialog(Enums.Enum.Action action, UserAccountModel user)
     {
-     
+
         var parameters = new DialogParameters<ConfirmDialog>
         {
             { x => x.ContentText, "Do you really want to "+ action.ToString().ToLower() +" these record?" },
@@ -207,7 +285,17 @@ else
         var dialogResult = await dialog.Result;
         if (!dialogResult.Canceled)
         {
-            
+
+        }
+    }
+    private async Task OpenFile(UserAccountModel user) {
+        Task<List<FileModel>> list = _driverService.GetFiles(user.uid);
+        await list;
+        if (list.Status == TaskStatus.RanToCompletion)
+        {
+            user.isopen = !user.isopen;
+            user.ListFiles = list.Result;
+            StateHasChanged();
         }
     }
     private void SetupGraph()
