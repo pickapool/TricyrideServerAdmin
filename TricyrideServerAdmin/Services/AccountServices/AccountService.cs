@@ -60,5 +60,23 @@ namespace TricyrideServerAdmin.Services.AccountServices
                 .Child($"Accounts/{user.uid}/").PutAsync
                 (json);
         }
+        public async Task<UserAccountResponse> CreateUserWithEmailAndPassword(string email, string password)
+        {
+            var jsonContent = new
+            {
+                email = email,
+                password = password,
+                returnSecureToken = true
+            };
+
+            // POST request to Firebase to create a new user
+            var response = await _httpClient.PostAsync(
+                "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDSYtNtm37w3ZPxpJtxd2Iig3W7won6FaM",
+                new StringContent(System.Text.Json.JsonSerializer.Serialize(jsonContent), Encoding.UTF8, "application/json"));
+
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<UserAccountResponse>();
+            return result;
+        }
     }
 }

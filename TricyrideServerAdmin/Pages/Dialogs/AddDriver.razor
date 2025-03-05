@@ -1,0 +1,119 @@
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1"/>
+            ADD
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudStepper NonLinear>
+            <ChildContent>
+                <MudStep Title="Driver's Profile">
+                    <MudGrid Spacing="3">
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-Value="UserAccount.firstname" Margin="Margin.Dense" Variant="Variant.Outlined" Label="First name" ShrinkLabel></MudTextField>
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-Value="UserAccount.lastname" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Last name" ShrinkLabel></MudTextField>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-Value="UserAccount.address" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Address" ShrinkLabel></MudTextField>
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-Value="UserAccount.phoneNumber" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Contact Number" ShrinkLabel></MudTextField>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-Value="UserAccount.email" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Email" ShrinkLabel></MudTextField>
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-Value="UserAccount.username" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Username" ShrinkLabel></MudTextField>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-Value="UserAccount.password" InputType="PasswordInput" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                            Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show password"/>
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudTextField @bind-Value="cpassword" Margin="Margin.Dense" Variant="Variant.Outlined" InputType="InputType.Password" Label="Confirm Password" ShrinkLabel></MudTextField>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+                    </MudGrid>
+                </MudStep>
+                <MudStep Title="Documents">
+
+                </MudStep>
+                </ChildContent>
+            <ActionContent Context="stepper"></ActionContent>
+        </MudStepper>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" OnClick="OnComplete">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+    private void Cancel() => MudDialog.Cancel();
+    private UserAccountModel UserAccount = new();
+    string cpassword = string.Empty;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+    bool isShow;
+    void ButtonTestclick()
+    {
+        @if (isShow)
+        {
+            isShow = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else {
+            isShow = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+    private void Add()
+    {
+        MudDialog.Close();
+    }
+    private async Task OnComplete() {
+        if(String.IsNullOrEmpty(UserAccount.password) || String.IsNullOrEmpty(UserAccount.email))
+        {
+            Extensions.ShowSnackbar("All fields are required.", Variant.Filled, _snackBar, Severity.Error);
+            return;
+        }
+        if(UserAccount.password != cpassword)
+        {
+            Extensions.ShowSnackbar("Password did not match.", Variant.Filled, _snackBar, Severity.Error);
+            return;
+        }
+        UserAccountResponse save = await _accountService.CreateUserWithEmailAndPassword(UserAccount.email, UserAccount.password);
+        UserAccount.accountType = "Driver";
+        UserAccount.uid = save.LocalId;
+        await _accountService.UpdateUser(UserAccount);
+        Extensions.ShowSnackbar("Driver successfully saved.", Variant.Filled, _snackBar, Severity.Success);
+        MudDialog.Close();
+    }
+}
+<style>
+    .mud-dialog-title {
+        padding: 10px !important;
+        background-color: rgba(89,74,226,1);
+        color: white !important;
+    }
+    .mud-dialog-title .mud-icon-root.mud-svg-icon {
+        margin-top: -10px;
+    }
+</style>
+
+

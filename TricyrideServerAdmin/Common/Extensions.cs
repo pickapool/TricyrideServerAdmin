@@ -34,5 +34,9 @@ namespace TricyrideServerAdmin.Common
         {
             return DateTime.UtcNow >= tokenModel.ExpiresAt;
         }
+        public static void Log<T>(T t)
+        {
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented));
+        }
     }
 }

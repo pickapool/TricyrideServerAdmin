@@ -8,6 +8,10 @@
 else
 {
     <MudGrid Spacing="2" Class="pa-3">
+        <MudItem xs="4">
+            <MudButton OnClick="AddDriver" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add">Add Driver</MudButton>
+        </MudItem>
+         <MudItem xs="7"></MudItem>
         <MudItem xs="12" sm="12" md="8" xl="8">
             <MudPaper Elevation="0" Height="auto">
                 <Chart Config="lineChart" Height="100"></Chart>
@@ -74,7 +78,7 @@ else
                                 <MudImage Src="@(context.profilePicture == null || String.IsNullOrEmpty(context.profilePicture) ? "images/blank_profile.png" : context.profilePicture)"></MudImage>
                             </MudAvatar>
                             <div class="d-flex flex-column">
-                                <MudText Typo="Typo.button">@(context.profilePicture == null ? "Not Occupied" : context.GetFullName())</MudText>
+                                <MudText Typo="Typo.button">@(context.profilePicture == null ? "" : context.GetFullName())</MudText>
                                 <MudText Typo="Typo.caption">@(context.profilePicture == null ? "" : context.email)</MudText>
                             </div>
 
@@ -186,6 +190,8 @@ else
     List<CommuteModel> listCommutes = new();
     protected override async Task OnInitializedAsync()
     {
+        IsLoading = true;
+        StateHasChanged();
         MainLayout.Title = "Drivers";
         await GetList();
         IsLoading = false;
@@ -435,6 +441,18 @@ else
             });
         }
         
+    }
+    private async Task AddDriver()
+    {
+        var parameters = new DialogParameters<AddDriver> { };
+        var options = new DialogOptions { CloseOnEscapeKey = false, BackdropClick = false, FullWidth = true, MaxWidth = MaxWidth.Medium };
+        var dialog = await _dialogService.ShowAsync<AddDriver>("Add Driver", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await OnInitializedAsync();
+        }
     }
 
 }

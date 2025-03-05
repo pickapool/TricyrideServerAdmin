@@ -5,6 +5,22 @@ namespace TricyrideServerAdmin.Models
 {
     public class UserAccountModel
     {
+        public UserAccountModel()
+    {
+        uid = string.Empty;
+        firstname = string.Empty;
+        lastname = string.Empty;
+        email = string.Empty;
+        phoneNumber = string.Empty;
+        username = string.Empty;
+        password = string.Empty;
+        profilePicture = string.Empty;
+        accountType = string.Empty;
+        dateOfBirth = string.Empty;
+        address = string.Empty;
+        IsApproved = false;  // Default value for nullable boolean
+        creationDate = DateTime.Now;  // Default value for nullable DateTime
+    }
         public string uid { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
