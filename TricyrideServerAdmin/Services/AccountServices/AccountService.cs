@@ -85,5 +85,30 @@ namespace TricyrideServerAdmin.Services.AccountServices
                 .Child($"DriverDocuments/{document.key}/").PutAsync
                 (json);
         }
+        public async Task<DriverDocumentModel> GetDocumentByKey(string key)
+        {
+            var data = await _firebaseClient
+            .Child($"DriverDocuments/{key}")
+            .OnceSingleAsync<DriverDocumentModel>();
+            if (data != null)
+            {
+                return new DriverDocumentModel
+                {
+                    key = data.key,
+                    isValidID = data.isValidID,
+                    isORCR = data.isORCR,
+                    isDriverLicense = data.isDriverLicense,
+                    isInsurance = data.isInsurance,
+                    ValidID = data.ValidID,
+                    ORCR = data.ORCR,
+                    DriverLicenseExpiry = data.DriverLicenseExpiry,
+                    InsuranceExpiry = data.InsuranceExpiry,
+                    LicenseNo = data.LicenseNo,
+                    Owner = data.Owner
+                };
+            }
+
+            return new();
+        }
     }
 }

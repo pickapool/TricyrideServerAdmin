@@ -39,19 +39,19 @@
                         
                         <MudItem xs="2"></MudItem>
                         <MudItem xs="4">
-                            <MudTextField @bind-Value="UserAccount.email" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Email" ShrinkLabel></MudTextField>
+                            <MudTextField @bind-Value="UserAccount.email" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Email" Disabled="@(!String.IsNullOrEmpty(UserAccount.uid))" ShrinkLabel></MudTextField>
                         </MudItem>
                         <MudItem xs="4">
-                            <MudTextField @bind-Value="UserAccount.username" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Username" ShrinkLabel></MudTextField>
+                            <MudTextField @bind-Value="UserAccount.username" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Username" Disabled="@(!String.IsNullOrEmpty(UserAccount.uid))" ShrinkLabel></MudTextField>
                         </MudItem>
                         <MudItem xs="2"></MudItem>
                         <MudItem xs="2"></MudItem>
                         <MudItem xs="4">
-                            <MudTextField @bind-Value="UserAccount.password" InputType="PasswordInput" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                            <MudTextField @bind-Value="UserAccount.password" InputType="PasswordInput" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="@(!String.IsNullOrEmpty(UserAccount.uid))"
                                             Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show password"/>
                         </MudItem>
                         <MudItem xs="4">
-                            <MudTextField @bind-Value="cpassword" Margin="Margin.Dense" Variant="Variant.Outlined" InputType="InputType.Password" Label="Confirm Password" ShrinkLabel></MudTextField>
+                            <MudTextField @bind-Value="cpassword" Margin="Margin.Dense" Variant="Variant.Outlined" InputType="InputType.Password" Label="Confirm Password" Disabled="@(!String.IsNullOrEmpty(UserAccount.uid))" ShrinkLabel></MudTextField>
                         </MudItem>
                         <MudItem xs="2"></MudItem>
                     </MudGrid>
@@ -129,16 +129,22 @@
     </DialogActions>
 </MudDialog>
 @code {
-    [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+    [Parameter] public UserAccountModel UserAccount { get; set; }
     private void Cancel() => MudDialog.Cancel();
-    private UserAccountModel UserAccount = new();
+    
     private DriverDocumentModel DriverDocument = new();
     string cpassword = string.Empty;
     InputType PasswordInput = InputType.Password;
     string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
     bool isShow;
     private int _index;
+    protected override async Task OnInitializedAsync() {
+        if(!String.IsNullOrEmpty(UserAccount.uid)) {
+            DriverDocument = await _accountService.GetDocumentByKey(UserAccount.uid);
+            StateHasChanged();
+        }
+    }
     void ButtonTestclick()
     {
         @if (isShow)

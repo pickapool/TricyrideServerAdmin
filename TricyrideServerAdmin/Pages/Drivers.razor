@@ -9,7 +9,7 @@ else
 {
     <MudGrid Spacing="2" Class="pa-3">
         <MudItem xs="4">
-            <MudButton OnClick="AddDriver" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add">Add Driver</MudButton>
+            <MudButton OnClick="()=> AddDriver(new())" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add">Add Driver</MudButton>
         </MudItem>
          <MudItem xs="7"></MudItem>
         <MudItem xs="12" sm="12" md="8" xl="8">
@@ -129,6 +129,12 @@ else
                                 <div class='d-flex align-center gap-2 '>
                                     <MudIcon Icon='@Icons.Material.Filled.AttachFile' Size='Size.Small' />
                                     <MudText Typo='Typo.body2'>Files</MudText>
+                                </div>
+                            </MudMenuItem>
+                            <MudMenuItem OnClick="()=> AddDriver(context)">
+                                <div class='d-flex align-center gap-2 '>
+                                    <MudIcon Icon='@Icons.Material.Filled.Edit' Size='Size.Small' />
+                                    <MudText Typo='Typo.body2'>Edit</MudText>
                                 </div>
                             </MudMenuItem>
                         </MudMenu>
@@ -442,9 +448,12 @@ else
         }
         
     }
-    private async Task AddDriver()
+    private async Task AddDriver(UserAccountModel user)
     {
-        var parameters = new DialogParameters<AddDriver> { };
+        var parameters = new DialogParameters<AddDriver> 
+        {
+            { x=> x.UserAccount , user } 
+        };
         var options = new DialogOptions { CloseOnEscapeKey = false, BackdropClick = false, FullWidth = true, MaxWidth = MaxWidth.Medium };
         var dialog = await _dialogService.ShowAsync<AddDriver>("Add Driver", parameters, options);
         var result = await dialog.Result;

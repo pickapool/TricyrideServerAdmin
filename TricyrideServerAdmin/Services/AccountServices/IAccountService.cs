@@ -9,5 +9,6 @@ namespace TricyrideServerAdmin.Services.AccountServices
         Task UpdateUser(UserAccountModel user);
         Task<UserAccountResponse> CreateUserWithEmailAndPassword(string email, string password);
         Task AddDocumentCheckList(DriverDocumentModel document);
+        Task<DriverDocumentModel> GetDocumentByKey(string key);
     }
 }
