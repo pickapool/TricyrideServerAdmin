@@ -78,5 +78,12 @@ namespace TricyrideServerAdmin.Services.AccountServices
             var result = await response.Content.ReadFromJsonAsync<UserAccountResponse>();
             return result;
         }
+        public async Task AddDocumentCheckList(DriverDocumentModel document)
+        {
+            var json = JsonConvert.SerializeObject(document);
+            await _firebaseClient
+                .Child($"DriverDocuments/{document.key}/").PutAsync
+                (json);
+        }
     }
 }

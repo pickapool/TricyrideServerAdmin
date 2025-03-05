@@ -8,10 +8,17 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudStepper NonLinear>
+        <MudStepper NonLinear @bind-ActiveIndex="_index">
             <ChildContent>
                 <MudStep Title="Driver's Profile">
                     <MudGrid Spacing="3">
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="8">
+                            Driver's Information
+                            <MudDivider></MudDivider>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+
                         <MudItem xs="2"></MudItem>
                         <MudItem xs="4">
                             <MudTextField @bind-Value="UserAccount.firstname" Margin="Margin.Dense" Variant="Variant.Outlined" Label="First name" ShrinkLabel></MudTextField>
@@ -20,6 +27,7 @@
                             <MudTextField @bind-Value="UserAccount.lastname" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Last name" ShrinkLabel></MudTextField>
                         </MudItem>
                         <MudItem xs="2"></MudItem>
+
                         <MudItem xs="2"></MudItem>
                         <MudItem xs="4">
                             <MudTextField @bind-Value="UserAccount.address" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Address" ShrinkLabel></MudTextField>
@@ -28,6 +36,7 @@
                             <MudTextField @bind-Value="UserAccount.phoneNumber" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Contact Number" ShrinkLabel></MudTextField>
                         </MudItem>
                         <MudItem xs="2"></MudItem>
+                        
                         <MudItem xs="2"></MudItem>
                         <MudItem xs="4">
                             <MudTextField @bind-Value="UserAccount.email" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Email" ShrinkLabel></MudTextField>
@@ -48,7 +57,67 @@
                     </MudGrid>
                 </MudStep>
                 <MudStep Title="Documents">
+                    <MudGrid Spacing="3">
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="8">
+                            Document Check List
+                            <MudDivider></MudDivider>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
 
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="3">
+                            <MudCheckBox Class="mt-2" @bind-Value="DriverDocument.isValidID" Color="Color.Primary" Dense>Valid ID</MudCheckBox>
+                        </MudItem>
+                        <MudItem xs="5">
+                            <MudTextField @bind-Value="DriverDocument.ValidID" Margin="Margin.Dense" Variant="Variant.Text" Label="Type" ShrinkLabel Disabled="!DriverDocument.isValidID"></MudTextField>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="3">
+                            <MudCheckBox Class="mt-2" @bind-Value="DriverDocument.isORCR" Color="Color.Primary" Dense>OR/CR</MudCheckBox>
+                        </MudItem>
+                        <MudItem xs="5">
+                            <MudTextField @bind-Value="DriverDocument.ORCR" Margin="Margin.Dense" Variant="Variant.Text" Label="Type" ShrinkLabel Disabled="!DriverDocument.isORCR"></MudTextField>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="3">
+                            <MudCheckBox Class="mt-2" @bind-Value="DriverDocument.isDriverLicense" Color="Color.Primary" Dense>Driver License</MudCheckBox>
+                        </MudItem>
+                        <MudItem xs="5">
+                            <MudDatePicker Label="Expiration" @bind-Date="DriverDocument.DriverLicenseExpiry" Margin="Margin.Dense" Disabled="!DriverDocument.isDriverLicense"></MudDatePicker>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="3">
+                            <MudCheckBox Class="mt-2" @bind-Value="DriverDocument.isInsurance" Color="Color.Primary" Dense>Insurance Policy</MudCheckBox>
+                        </MudItem>
+                        <MudItem xs="5">
+                            <MudDatePicker Label="Expiration" @bind-Date="DriverDocument.InsuranceExpiry" Margin="Margin.Dense" Disabled="!DriverDocument.isInsurance"></MudDatePicker>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="8">
+                            Vehicle Information (if Applicable)
+                            <MudDivider></MudDivider>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+                        
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="8">
+                            <MudTextField @bind-Value="DriverDocument.LicenseNo" Margin="Margin.Dense" Variant="Variant.Text" Label="License No./Plate No." ShrinkLabel ></MudTextField>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+                        
+                        <MudItem xs="2"></MudItem>
+                        <MudItem xs="8">
+                            <MudTextField @bind-Value="DriverDocument.Owner" Margin="Margin.Dense" Variant="Variant.Text" Label="Owner" ShrinkLabel ></MudTextField>
+                        </MudItem>
+                        <MudItem xs="2"></MudItem>
+                    </MudGrid>
                 </MudStep>
                 </ChildContent>
             <ActionContent Context="stepper"></ActionContent>
@@ -56,7 +125,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Error" OnClick="OnComplete">Save</MudButton>
+        <MudButton Color="Color.Error" OnClick="OnComplete">@(_index == 0 ? "Next" : "Save")</MudButton>
     </DialogActions>
 </MudDialog>
 @code {
@@ -64,10 +133,12 @@
     private MudDialogInstance MudDialog { get; set; }
     private void Cancel() => MudDialog.Cancel();
     private UserAccountModel UserAccount = new();
+    private DriverDocumentModel DriverDocument = new();
     string cpassword = string.Empty;
     InputType PasswordInput = InputType.Password;
     string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
     bool isShow;
+    private int _index;
     void ButtonTestclick()
     {
         @if (isShow)
@@ -87,6 +158,13 @@
         MudDialog.Close();
     }
     private async Task OnComplete() {
+        if(_index == 0)
+        {
+            _index = 1;
+            StateHasChanged();
+            return;
+        }
+
         if(String.IsNullOrEmpty(UserAccount.password) || String.IsNullOrEmpty(UserAccount.email))
         {
             Extensions.ShowSnackbar("All fields are required.", Variant.Filled, _snackBar, Severity.Error);
@@ -101,6 +179,8 @@
         UserAccount.accountType = "Driver";
         UserAccount.uid = save.LocalId;
         await _accountService.UpdateUser(UserAccount);
+        DriverDocument.key = save.LocalId;
+        await _accountService.AddDocumentCheckList(DriverDocument);
         Extensions.ShowSnackbar("Driver successfully saved.", Variant.Filled, _snackBar, Severity.Success);
         MudDialog.Close();
     }
