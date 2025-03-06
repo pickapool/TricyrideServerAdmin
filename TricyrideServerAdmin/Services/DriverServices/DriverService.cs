@@ -117,10 +117,10 @@ namespace TricyrideServerAdmin.Services.DriverServices
             {
                 return new FareModel
                 {
-                    StudentFare = data.StudentFare,
-                    RegularFare = data.RegularFare,
-                    StudentKM = data.StudentKM,
-                    RegularKM = data.RegularKM,
+                    studentFare = data.studentFare,
+                    regularFare = data.regularFare,
+                    studentKM = data.studentKM,
+                    regularKM = data.regularKM,
                 };
             }
             return new();
