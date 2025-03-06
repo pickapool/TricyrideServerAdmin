@@ -42,6 +42,7 @@
                 <MudNavLink Href="/commuters" Icon="@Icons.Material.Filled.PersonPin" Match="NavLinkMatch.All">Commuters</MudNavLink>
                 <MudNavLink Href="/commutes" Icon="@Icons.Material.Filled.Commute" Match="NavLinkMatch.All">Ratings</MudNavLink>
                 <MudNavLink Href="/reports" Icon="@Icons.Material.Filled.PictureAsPdf" Match="NavLinkMatch.All">Reports</MudNavLink>
+                <MudNavLink OnClick="OpenDialogFare" Icon="@Icons.Material.Filled.Money" Match="NavLinkMatch.All">Fare</MudNavLink>
                 @* <MudNavGroup Title="User Pages" Icon="@Icons.Material.Filled.PeopleAlt" Expanded="true"> *@
                         
                 @* </MudNavGroup> *@
@@ -77,6 +78,17 @@
         ((CustomAuthStateProvider)_authenticationStateProvider).NotifyUserLogout();
         _navigation.NavigateTo("/");
     }   
+    private async Task OpenDialogFare() {
+
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true, CloseOnEscapeKey = false, BackdropClick = false };
+        var parameters = new DialogParameters<Fare>{};
+        var dialog = await _dialogService.ShowAsync<Fare>("", parameters, options);
+        var dialogResult = await dialog.Result;
+        if (!dialogResult.Canceled)
+        {
+            
+        }
+    }
 
 }
 <style>

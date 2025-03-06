@@ -1,0 +1,65 @@
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1"/>
+            SET FARE
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <div class="pa-2">
+            <span>Fare</span>
+            <MudDivider></MudDivider>
+            <MudGrid Class="pa-4" Spacing="3">
+                <MudItem xs="6" Class="d-flex align-items-center">
+                    <MudText Typo="Typo.h6">Student</MudText>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudTextField T="double" @bind-Value="Fares.StudentFare" Variant="Variant.Text" Label="Base Fare" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudTextField T="double" @bind-Value="Fares.StudentKM" Variant="Variant.Text" Label="KM" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="6" Class="d-flex align-items-center">
+                    <MudText Typo="Typo.h6">Regular</MudText>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudTextField T="double" @bind-Value="Fares.RegularFare" Variant="Variant.Text" Label="Base Fare" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudTextField T="double" @bind-Value="Fares.RegularKM" Variant="Variant.Text" Label="KM" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+            </MudGrid>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton OnClick="SaveFare" Color="Color.Error">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+    private void Cancel() => MudDialog.Cancel();
+    FareModel Fares = new();
+    protected override async Task OnInitializedAsync() {
+       Fares = await _driverService.GetFare();
+       StateHasChanged();
+    }
+    private async Task SaveFare() {
+        await _driverService.SaveFare(Fares);
+        Extensions.ShowSnackbar("Fare successfully saved.", Variant.Filled, _snackBar, Severity.Success);
+        MudDialog.Close();
+    }
+}
+<style>
+    .mud-dialog-title {
+        padding: 10px !important;
+        background-color: rgba(89,74,226,1);
+        color: white !important;
+    }
+    .mud-dialog-title .mud-icon-root.mud-svg-icon {
+        margin-top: -10px;
+    }
+</style>
+

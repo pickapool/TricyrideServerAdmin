@@ -9,5 +9,7 @@ namespace TricyrideServerAdmin.Services.DriverServices
         Task<FileModel> UploadFiles(IBrowserFile file, string driverUid);
         Task<List<FileModel>> GetFiles(string driverUid);
         Task DownloadFileAsync(FileModel file, ILocalStorageService _localStorage);
+        Task SaveFare(FareModel fare);
+        Task<FareModel> GetFare();
     }
 }

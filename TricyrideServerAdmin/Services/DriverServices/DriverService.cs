@@ -72,20 +72,20 @@ namespace TricyrideServerAdmin.Services.DriverServices
                 .Child("Files")
                 .PostAsync(json);
         }
-        public async Task<List<FileModel>> GetFiles(string driverUid)
-        {
-            var data = await _firebaseClient
-                .Child("Files")
-                .OnceAsync<FileModel>();
+    public async Task<List<FileModel>> GetFiles(string driverUid)
+    {
+        var data = await _firebaseClient
+            .Child("Files")
+            .OnceAsync<FileModel>();
 
-            return data.Select(d => new FileModel
-            {
-                key = d.Object.key,
-                driverUid = d.Object.driverUid,
-                file = d.Object.file,
-                fileName = d.Object.fileName,
-            }).Where( e => e.driverUid == driverUid).ToList();
-        }
+        return data.Select(d => new FileModel
+        {
+            key = d.Object.key,
+            driverUid = d.Object.driverUid,
+            file = d.Object.file,
+            fileName = d.Object.fileName,
+        }).Where( e => e.driverUid == driverUid).ToList();
+    }
         public async Task DownloadFileAsync(FileModel file, ILocalStorageService _localStorage)
         {
             string downloadFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
@@ -99,6 +99,31 @@ namespace TricyrideServerAdmin.Services.DriverServices
                 // Download the file from Firebase Storage to the local file system
                 await _storageClient.DownloadObjectAsync(_bucketName, fileName, fileStream);
             }
+        }
+        public async Task SaveFare(FareModel fare)
+        {
+            var json = JsonConvert.SerializeObject(fare);
+
+            await _firebaseClient
+                .Child("Fare")
+                .PatchAsync(json);
+        }
+        public async Task<FareModel> GetFare()
+        {
+            var data = await _firebaseClient
+            .Child("Fare")
+            .OnceSingleAsync<FareModel>();
+            if (data != null)
+            {
+                return new FareModel
+                {
+                    StudentFare = data.StudentFare,
+                    RegularFare = data.RegularFare,
+                    StudentKM = data.StudentKM,
+                    RegularKM = data.RegularKM,
+                };
+            }
+            return new();
         }
     }
 }
