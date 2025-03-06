@@ -22,6 +22,8 @@ namespace TricyrideServerAdmin.Models
         public string Address1 { get; set; }
         public string Address2 { get; set; }
         public float Rating { get; set; }
+        public int studentCount { get; set; }
+        public int regularCount { get; set; }
 
         [JsonIgnore] // or use Newtonsoft.Json.JsonIgnore if applicable
         public UserAccountModel? DriverAccount { get; set; }

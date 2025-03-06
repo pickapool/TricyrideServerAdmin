@@ -15,10 +15,11 @@ else
                 Class="mt-0" Immediate></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh Class="text-center"><MudTableSortLabel SortLabel="uid" T="CommuteModel">uid</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="uid" T="CommuteModel">UID</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="Driver" T="CommuteModel">Driver</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="Commuter" T="CommuteModel">Commuter</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="Date" T="CommuteModel">Date</MudTableSortLabel></MudTh>
+            <MudTh Class="text-center"><MudTableSortLabel SortLabel="Fare" T="CommuteModel">Passenger</MudTableSortLabel></MudTh>
             <MudTh Class="text-center"><MudTableSortLabel SortLabel="Fare" T="CommuteModel">Fare</MudTableSortLabel></MudTh>
             <MudTh Class="text-center"><MudTableSortLabel SortLabel="Status" T="CommuteModel">Status</MudTableSortLabel></MudTh>
         </HeaderContent>
@@ -48,6 +49,18 @@ else
                 </div>
             </MudTd>
             <MudTd DataLabel="Date">@context.CommuteDate?.ToDateTime()</MudTd>
+            <MudTh Class="text-center">
+                <div class="d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-center gap-4">
+                        <MudIcon Icon="@Icons.Material.Filled.School" Size="Size.Small"></MudIcon>
+                        @context.studentCount
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center gap-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small"></MudIcon>
+                        @context.regularCount
+                    </div>
+                </div>
+            </MudTh>
             <MudTd Class="text-end" DataLabel="Fare">₱ @context.Fare.ToString("N2")</MudTd>
             <MudTd Class="text-center" DataLabel="Status">
                 @if(context.CommuteStatus == Enums.Enum.CommuteStatus.InProgress)

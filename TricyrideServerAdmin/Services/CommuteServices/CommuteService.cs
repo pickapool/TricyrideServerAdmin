@@ -46,7 +46,9 @@ namespace TricyrideServerAdmin.Services.CommuteServices
                 Time = d.Object.Time,
                 Address1 = d.Object.Address1,
                 Address2 = d.Object.Address2,
-                Rating = d.Object.Rating
+                Rating = d.Object.Rating,
+                regularCount = d.Object.regularCount,
+                studentCount = d.Object.studentCount,
             }).ToList();
         }
     }
