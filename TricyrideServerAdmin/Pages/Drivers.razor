@@ -231,7 +231,9 @@ else
             e.creationDate =  userRecord.UserMetaData.CreationTimestamp;
             var driverCommutes = listCommutes.Where(c => c.DriverUid == e.uid).ToList();
             if (driverCommutes.Any()) {
-                e.AverageRating = driverCommutes.Where( e => e.Rating > 0).Average(c => c.Rating);
+                e.AverageRating = driverCommutes
+                    .Where(c => c.Rating > 0)
+                    .Any() ? driverCommutes.Where(c => c.Rating > 0).Average(c => c.Rating) : 0;
                 if(e.AverageRating < 2 && driverCommutes.Count() >= 50) {
                     e.IsApproved = false;
                     e.accountType = "Driver";
